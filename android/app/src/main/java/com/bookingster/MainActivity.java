@@ -1,4 +1,4 @@
-package com.bookingster;
+package com.im.bookingster;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -19,7 +19,7 @@ export default function Login() {
         <View style={styles.imageVeiw}>
           <Image
             style={styles.image}
-            source={require('../img/undraw_Forms_re_pkrt.png')}></Image>
+            source={require('./img/undraw_forms_re_pkrt.png')}></Image>
         </View>
       </View>
       <KeyboardAvoidingView
@@ -55,7 +55,7 @@ export default function Login() {
             <TouchableOpacity style={styles.googleButton}>
               <Image
                 style={styles.googleImage}
-                source={require('../img/google.png')}></Image>
+                source={require('./img/google.png')}></Image>
             </TouchableOpacity>
           </View>
           <View style={styles.footerView}>

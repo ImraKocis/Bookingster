@@ -1,4 +1,4 @@
-package com.bookingster;
+package com.im.bookingster;
 
 import android.app.Application;
 import android.content.Context;
