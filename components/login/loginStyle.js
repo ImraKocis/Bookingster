@@ -22,6 +22,7 @@ export const loginStyle = StyleSheet.create({
     right: 35,
     left: 35,
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   image: {
     flex: 1,

@@ -1,4 +1,4 @@
-package com.bookingster.newarchitecture.components;
+package com.im.bookingster.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
