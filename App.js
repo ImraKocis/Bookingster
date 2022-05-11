@@ -9,10 +9,16 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
+import {NativeBaseProvider} from 'native-base';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
+import SignUpTest from './components/signup/SignUpTest';
 const App = () => {
-  return <Login />;
+  return (
+    <NativeBaseProvider>
+      <SignUpTest />
+    </NativeBaseProvider>
+  );
 };
 
 export default App;

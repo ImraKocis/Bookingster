@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {loginStyle} from './loginStyle';
-import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {LoadSignInImg, LoadGoogleImg} from '../../assets/getImages';
 
 GoogleSignin.configure({
   webClientId: 'x',
@@ -20,7 +20,7 @@ const styles = loginStyle;
 
 export default function Login() {
   const [SignUpUrl, setSignUpUrl] = useState('');
-  const [GoogleUrl, setGooglepUrl] = useState('');
+  const [GoogleUrl, setGoogleUrl] = useState('');
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [initializing, setInitializing] = useState(true);
@@ -30,10 +30,9 @@ export default function Login() {
     setUser(user);
     if (initializing) setInitializing(false);
   };
-
-  const LoadImages = async () => {
-    setSignUpUrl(await storage().ref('SignIn.png').getDownloadURL());
-    setGooglepUrl(await storage().ref('GoogleLogo.png').getDownloadURL());
+  const GetUrls = async () => {
+    setSignUpUrl(await LoadSignInImg());
+    setGoogleUrl(await LoadGoogleImg());
   };
 
   const LoginUser = () => {
@@ -52,11 +51,16 @@ export default function Login() {
   const onGoogleButtonPress = async () => {
     const {idToken} = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    return auth().signInWithCredential(googleCredential);
+
+    const credentials = auth().signInWithCredential(googleCredential);
+    credentials.then(credential => {
+      console.log(credential.additionalUserInfo.isNewUser);
+    });
+    return credentials;
   };
 
   useEffect(() => {
-    LoadImages();
+    GetUrls();
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
@@ -85,7 +89,7 @@ export default function Login() {
                   onChangeText={value => setEmail(value)}
                   style={styles.email}
                   underlineColorAndroid="black"
-                  placeholder="Emial"></TextInput>
+                  placeholder="Email"></TextInput>
                 <TextInput
                   onChangeText={value => setPassword(value)}
                   style={styles.password}
@@ -100,7 +104,7 @@ export default function Login() {
                 </TouchableOpacity>
               </View>
               <View style={styles.signWithView}>
-                <Text style={styles.signWithText}>ili se prijavite sa</Text>
+                <Text style={styles.signWithText}>ili se prijavite s</Text>
               </View>
               <View style={styles.goolgeButtonView}>
                 <TouchableOpacity
