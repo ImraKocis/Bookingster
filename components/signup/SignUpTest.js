@@ -15,8 +15,6 @@ import {
   Center,
   Heading,
   HStack,
-  Link,
-  Button,
   Text,
 } from 'native-base';
 
@@ -25,8 +23,12 @@ import React, {useState, useEffect} from 'react';
 import {signupStyle} from './signupStyle';
 import {LoadSignUpImg, LoadGoogleImg} from '../../assets/getImages';
 import auth from '@react-native-firebase/auth';
-import {neutral} from '../../assets/getColors';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
+GoogleSignin.configure({
+  webClientId:
+    '1077636110112-0rvkfkpuqtsc5r38kla5vma11ioppkeq.apps.googleusercontent.com',
+});
 const styles = signupStyle;
 
 const SignUp = () => {
@@ -37,6 +39,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [ime, setIme] = useState(null);
   const [prezime, setPrezime] = useState(null);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [validationError, setValidationError] = useState({});
 
   const GetUrls = async () => {
@@ -57,6 +60,7 @@ const SignUp = () => {
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
           console.log('User account created & signed in!');
+          setSignUpSuccess(true);
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -74,6 +78,17 @@ const SignUp = () => {
     }
     setValidationError(errors);
   };
+  const onGoogleButtonPress = async () => {
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    const credentials = auth().signInWithCredential(googleCredential);
+    credentials.then(credential => {
+      console.log(credential.additionalUserInfo.isNewUser);
+    });
+    setSignUpSuccess(true);
+    return credentials;
+  };
   useEffect(() => {
     GetUrls();
   }, []);
@@ -81,7 +96,7 @@ const SignUp = () => {
     <SafeAreaView style={styles.mainView}>
       <View style={styles.imageContainer}>
         <View style={styles.imageVeiw}>
-          <Image style={styles.image} source={{uri: SignUpUrl}}></Image>
+          <Image style={styles.image} source={{uri: SignUpUrl}} />
         </View>
       </View>
       <KeyboardAvoidingView
@@ -230,6 +245,11 @@ const SignUp = () => {
                     {validationError.confirmPassword}
                   </FormControl.ErrorMessage>
                 </FormControl>
+                {signUpSuccess && (
+                  <Center marginBottom={2}>
+                    <Text fontSize={16}>Uspješna registracija</Text>
+                  </Center>
+                )}
               </VStack>
               <VStack flex={0.2}>
                 <Center marginY="5%">
@@ -239,11 +259,12 @@ const SignUp = () => {
 
                   <HStack marginY={3}>
                     <TouchableOpacity
-                      // onPress={onGoogleButtonPress}
+                      onPress={onGoogleButtonPress}
                       style={styles.googleButton}>
                       <Image
                         style={styles.googleImage}
-                        source={{uri: GoogleUrl}}></Image>
+                        source={{uri: GoogleUrl}}
+                      />
                     </TouchableOpacity>
                   </HStack>
                 </Center>

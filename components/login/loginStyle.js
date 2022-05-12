@@ -64,14 +64,14 @@ export const loginStyle = StyleSheet.create({
   },
   button: {
     backgroundColor: '#EA5252',
-    width: 215,
+    width: 195,
     height: 45,
     borderRadius: 10,
     justifyContent: 'center',
   },
   buttonText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     alignSelf: 'center',
   },

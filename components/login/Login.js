@@ -1,16 +1,32 @@
 import {
   Image,
   SafeAreaView,
-  Text,
   TextInput,
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
+import {
+  Box,
+  HStack,
+  VStack,
+  FormControl,
+  Center,
+  Text,
+  Input,
+  Icon,
+  WarningOutlineIcon,
+  Heading,
+} from 'native-base';
 import React, {useState, useEffect} from 'react';
+import IconVector from 'react-native-vector-icons/MaterialIcons';
+
 import {loginStyle} from './loginStyle';
 import auth from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 import {LoadSignInImg, LoadGoogleImg} from '../../assets/getImages';
 
 GoogleSignin.configure({
@@ -25,6 +41,7 @@ export default function Login() {
   const [password, setPassword] = useState();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [validationError, setValidationError] = useState({});
 
   const onAuthStateChanged = user => {
     setUser(user);
@@ -36,12 +53,24 @@ export default function Login() {
   };
 
   const LoginUser = () => {
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('Logiran');
-      })
-      .catch(error => console.log(error));
+    var errors = {};
+    if (!email) errors.email = 'Email je obavezan';
+    if (!password) errors.password = 'Lozinka je obavezna';
+    if (email && password) {
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          console.log('Logiran');
+        })
+        .catch(error => {
+          if (error.code === 'auth/invalid-email')
+            errors.email = 'Neispravan email';
+          if (error.code === 'auth/invalid-password')
+            errors.password = 'Naispravna lozinka';
+          console.log(error);
+        });
+    }
+    setValidationError(errors);
   };
 
   const LogoutUser = () => {
@@ -82,44 +111,106 @@ export default function Login() {
             style={styles.container}>
             <View style={styles.paperView}>
               <View style={styles.headerView}>
-                <Text style={styles.header}>Prijava</Text>
+                <Heading
+                  size="xl"
+                  fontWeight="600"
+                  color="coolGray.800"
+                  _dark={{
+                    color: 'warmGray.50',
+                  }}>
+                  Prijava
+                </Heading>
               </View>
-              <View style={styles.formView}>
-                <TextInput
-                  onChangeText={value => setEmail(value)}
-                  style={styles.email}
-                  underlineColorAndroid="black"
-                  placeholder="Email"></TextInput>
-                <TextInput
-                  onChangeText={value => setPassword(value)}
-                  style={styles.password}
-                  underlineColorAndroid="black"
-                  placeholder="Password"
-                  secureTextEntry={true}></TextInput>
-              </View>
-
-              <View style={styles.buttonVeiw}>
-                <TouchableOpacity style={styles.button} onPress={LoginUser}>
-                  <Text style={styles.buttonText}>Prijavi se</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.signWithView}>
-                <Text style={styles.signWithText}>ili se prijavite s</Text>
-              </View>
-              <View style={styles.goolgeButtonView}>
-                <TouchableOpacity
-                  onPress={onGoogleButtonPress}
-                  style={styles.googleButton}>
-                  <Image
-                    style={styles.googleImage}
-                    source={{uri: GoogleUrl}}></Image>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.footerView}>
-                <Text style={styles.footerText}>
-                  © 2022 Bookingster - Sva prava pridržana.
-                </Text>
-              </View>
+              <Center flex={1} justifyContent="space-between" w="100%">
+                <Box flex={1} safeArea marginTop={4} w="80%">
+                  <VStack flex={0.5}>
+                    <FormControl
+                      flex={1}
+                      isInvalid={'email' in validationError}
+                      w={{
+                        base: '100%',
+                        md: '30%',
+                      }}>
+                      <Input
+                        variant="underlined"
+                        fontSize={15}
+                        color="black"
+                        onChangeText={value => setEmail(value)}
+                        InputLeftElement={
+                          <Icon
+                            as={<IconVector name="alternate-email" />}
+                            size="6"
+                            ml={3}
+                            color="black"
+                            marginRight={2}
+                          />
+                        }
+                        placeholder="Email"
+                      />
+                      <FormControl.ErrorMessage
+                        leftIcon={<WarningOutlineIcon size="xs" />}>
+                        {validationError.email}
+                      </FormControl.ErrorMessage>
+                    </FormControl>
+                    <FormControl
+                      flex={1}
+                      isInvalid={'password' in validationError}
+                      w={{
+                        base: '100%',
+                        md: '30%',
+                      }}>
+                      <Input
+                        variant="underlined"
+                        fontSize={15}
+                        color="black"
+                        secureTextEntry={true}
+                        onChangeText={value => setPassword(value)}
+                        InputLeftElement={
+                          <Icon
+                            as={<IconVector name="lock-outline" />}
+                            size="6"
+                            ml={3}
+                            color="black"
+                            marginRight={2}
+                          />
+                        }
+                        placeholder="Lozinka"
+                      />
+                      <FormControl.ErrorMessage
+                        leftIcon={<WarningOutlineIcon size="xs" />}>
+                        {validationError.password}
+                      </FormControl.ErrorMessage>
+                    </FormControl>
+                  </VStack>
+                  <VStack flex={0.4}>
+                    <Center marginY={5}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={LoginUser}>
+                        <Text style={styles.buttonText}>Prijavi se</Text>
+                      </TouchableOpacity>
+                      <HStack marginY={5}>
+                        <GoogleSigninButton
+                          onPress={onGoogleButtonPress}
+                          style={{width: 200, height: 50}}
+                          size={GoogleSigninButton.Size.Wide}
+                          color={
+                            GoogleSigninButton.Color.Light
+                          }></GoogleSigninButton>
+                      </HStack>
+                    </Center>
+                  </VStack>
+                  <HStack
+                    flex={0.1}
+                    width="100%"
+                    position="absolute"
+                    justifyContent="center"
+                    alignItems="center"
+                    bottom={1}>
+                    <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
+                  </HStack>
+                </Box>
+              </Center>
             </View>
           </KeyboardAvoidingView>
         </>

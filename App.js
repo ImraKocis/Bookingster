@@ -12,11 +12,10 @@ import {
 import {NativeBaseProvider} from 'native-base';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
-import SignUpTest from './components/signup/SignUpTest';
 const App = () => {
   return (
     <NativeBaseProvider>
-      <SignUpTest />
+      <Login />
     </NativeBaseProvider>
   );
 };

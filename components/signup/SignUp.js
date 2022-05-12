@@ -1,6 +1,4 @@
 import {
-  StyleSheet,
-  Text,
   View,
   SafeAreaView,
   Image,
@@ -16,16 +14,23 @@ import {
   VStack,
   Center,
   Heading,
+  HStack,
+  Text,
 } from 'native-base';
 
-import {TextInput} from 'react-native-paper';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
 import React, {useState, useEffect} from 'react';
 import {signupStyle} from './signupStyle';
 import {LoadSignUpImg, LoadGoogleImg} from '../../assets/getImages';
 import auth from '@react-native-firebase/auth';
-import {neutral} from '../../assets/getColors';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 
+GoogleSignin.configure({
+  webClientId: 'x',
+});
 const styles = signupStyle;
 
 const SignUp = () => {
@@ -36,6 +41,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [ime, setIme] = useState(null);
   const [prezime, setPrezime] = useState(null);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [validationError, setValidationError] = useState({});
 
   const GetUrls = async () => {
@@ -48,27 +54,42 @@ const SignUp = () => {
     if (!prezime || prezime.trim().lenght < 1)
       errors.prezime = 'Prezime je obavezno';
     if (password != confirmPassword)
-      errors.password = 'Lozinke se moraju podudarati';
-    if (errors == {}) r;
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          errors.email = 'Odabrani email već postoji';
-        }
+      errors.confirmPassword = 'Lozinke se moraju podudarati';
+    if (!password) errors.password = 'Lozinka je obavezna';
+    if (!email) errors.email = 'Email je obavezan';
+    if (email && password) {
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          console.log('User account created & signed in!');
+          setSignUpSuccess(true);
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            errors.email = 'Odabrani email već postoji';
+          }
 
-        if (error.code === 'auth/invalid-email') {
-          errors.email = 'Neispravan email ili lozinka';
-        }
-        if (error.code === 'auth/invalid-password') {
-          errors.password = 'Neispravan email ili lozinka';
-        }
-        console.error(error);
-      });
+          if (error.code === 'auth/invalid-email') {
+            errors.email = 'Neispravan email';
+          }
+          if (error.code === 'auth/invalid-password') {
+            errors.password = 'Neispravan lozinka';
+          }
+          console.error(error);
+        });
+    }
     setValidationError(errors);
+  };
+  const onGoogleButtonPress = async () => {
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    const credentials = auth().signInWithCredential(googleCredential);
+    credentials.then(credential => {
+      console.log(credential.additionalUserInfo.isNewUser);
+    });
+    setSignUpSuccess(true);
+    return credentials;
   };
   useEffect(() => {
     GetUrls();
@@ -77,7 +98,7 @@ const SignUp = () => {
     <SafeAreaView style={styles.mainView}>
       <View style={styles.imageContainer}>
         <View style={styles.imageVeiw}>
-          <Image style={styles.image} source={{uri: SignUpUrl}}></Image>
+          <Image style={styles.image} source={{uri: SignUpUrl}} />
         </View>
       </View>
       <KeyboardAvoidingView
@@ -87,143 +108,181 @@ const SignUp = () => {
         style={styles.container}>
         <View style={styles.paperView}>
           <View style={styles.headerView}>
-            <Text style={styles.header}>Registracija</Text>
+            <Heading
+              size="xl"
+              fontWeight="600"
+              color="coolGray.800"
+              _dark={{
+                color: 'warmGray.50',
+              }}>
+              Registracija
+            </Heading>
           </View>
-          <View style={styles.formView}>
-            <View style={styles.formImePrezime}>
-              <FormControl
-                isInvalid={'ime' in validationError}
-                w={{
-                  base: '45%',
-                  md: '30%',
-                }}>
-                <Input
-                  variant="underlined"
-                  fontSize={15}
-                  color="black"
-                  _text={{
-                    color: 'red',
-                  }}
-                  onChangeText={value => setIme(value)}
-                  InputLeftElement={
-                    <Icon
-                      as={<IconVector name="person-outline" />}
-                      size="6"
-                      ml={3}
+          <Center flex={1} justifyContent="space-between" w="100%">
+            <Box flex={1} marginTop="2" safeArea w="80%">
+              <VStack flex={0.67}>
+                <HStack flex={1} justifyContent="space-between">
+                  <FormControl flex={0.45} isInvalid={'ime' in validationError}>
+                    <Input
+                      variant="underlined"
+                      fontSize={15}
                       color="black"
-                      marginRight={2}
+                      _text={{
+                        color: 'red',
+                      }}
+                      onChangeText={value => setIme(value)}
+                      InputLeftElement={
+                        <Icon
+                          as={<IconVector name="person-outline" />}
+                          size="6"
+                          ml={3}
+                          color="black"
+                          marginRight={2}
+                        />
+                      }
+                      placeholder="Ime"
                     />
-                  }
-                  placeholder="Ime"
-                />
-                <FormControl.ErrorMessage
-                  leftIcon={<WarningOutlineIcon size="xs" />}>
-                  {validationError.ime}
-                </FormControl.ErrorMessage>
-              </FormControl>
-              <FormControl
-                w={{
-                  base: '45%',
-                  md: '30%',
-                }}>
-                <Input
-                  variant="underlined"
-                  fontSize={15}
-                  color="black"
-                  onChangeText={value => setPrezime(value)}
-                  placeholder="Prezime"
-                />
-              </FormControl>
-            </View>
-            <Input
-              variant="underlined"
-              fontSize={15}
-              color="black"
-              onChangeText={value => setEmail(value)}
-              w={{
-                base: '70%',
-                md: '30%',
-              }}
-              InputLeftElement={
-                <Icon
-                  as={<IconVector name="alternate-email" />}
-                  size="6"
-                  ml={3}
-                  color="black"
-                  marginRight={2}
-                />
-              }
-              placeholder="Email"
-            />
-            <Input
-              variant="underlined"
-              fontSize={15}
-              color="black"
-              onChangeText={value => setPassword(value)}
-              w={{
-                base: '70%',
-                md: '30%',
-              }}
-              InputLeftElement={
-                <Icon
-                  as={<IconVector name="lock-outline" />}
-                  size="6"
-                  ml={3}
-                  color="black"
-                  marginRight={2}
-                />
-              }
-              placeholder="Lozinka"
-            />
-            <Input
-              variant="underlined"
-              fontSize={15}
-              color="black"
-              onChangeText={value => setConfirmPassword(value)}
-              w={{
-                base: '70%',
-                md: '30%',
-              }}
-              InputLeftElement={
-                <Icon
-                  as={<IconVector name="check" />}
-                  size="6"
-                  ml={3}
-                  color="black"
-                  marginRight={2}
-                />
-              }
-              placeholder="Potvrdi lozinku"
-            />
-            {/* {validationError && (
-              <View style={styles.errorText}>
-                <Text>{validationError}</Text>
-              </View>
-            )} */}
-            <View style={styles.buttonVeiw}>
-              <TouchableOpacity style={styles.button} onPress={SignUpUser}>
-                <Text style={styles.buttonText}>Registriraj se</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.signWithView}>
-              <Text style={styles.signWithText}>ili se registriraj s</Text>
-            </View>
-            <View style={styles.goolgeButtonView}>
-              <TouchableOpacity
-                // onPress={onGoogleButtonPress}
-                style={styles.googleButton}>
-                <Image
-                  style={styles.googleImage}
-                  source={{uri: GoogleUrl}}></Image>
-              </TouchableOpacity>
-            </View>
-          </View>
+                    <FormControl.ErrorMessage
+                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                      {validationError.ime}
+                    </FormControl.ErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    flex={0.45}
+                    isInvalid={'prezime' in validationError}>
+                    <Input
+                      variant="underlined"
+                      fontSize={15}
+                      color="black"
+                      onChangeText={value => setPrezime(value)}
+                      placeholder="Prezime"
+                    />
+                    <FormControl.ErrorMessage
+                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                      {validationError.prezime}
+                    </FormControl.ErrorMessage>
+                  </FormControl>
+                </HStack>
+                <FormControl
+                  flex={1}
+                  isInvalid={'email' in validationError}
+                  w={{
+                    base: '100%',
+                    md: '30%',
+                  }}>
+                  <Input
+                    variant="underlined"
+                    fontSize={15}
+                    color="black"
+                    onChangeText={value => setEmail(value)}
+                    InputLeftElement={
+                      <Icon
+                        as={<IconVector name="alternate-email" />}
+                        size="6"
+                        ml={3}
+                        color="black"
+                        marginRight={2}
+                      />
+                    }
+                    placeholder="Email"
+                  />
+                  <FormControl.ErrorMessage
+                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                    {validationError.email}
+                  </FormControl.ErrorMessage>
+                </FormControl>
+                <FormControl
+                  flex={1}
+                  isInvalid={'password' in validationError}
+                  w={{
+                    base: '100%',
+                    md: '30%',
+                  }}>
+                  <Input
+                    variant="underlined"
+                    fontSize={15}
+                    color="black"
+                    secureTextEntry={true}
+                    onChangeText={value => setPassword(value)}
+                    InputLeftElement={
+                      <Icon
+                        as={<IconVector name="lock-outline" />}
+                        size="6"
+                        ml={3}
+                        color="black"
+                        marginRight={2}
+                      />
+                    }
+                    placeholder="Lozinka"
+                  />
+                  <FormControl.ErrorMessage
+                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                    {validationError.password}
+                  </FormControl.ErrorMessage>
+                </FormControl>
+                <FormControl
+                  flex={1}
+                  isInvalid={'confirmPassword' in validationError}
+                  w={{
+                    base: '100%',
+                    md: '30%',
+                  }}>
+                  <Input
+                    variant="underlined"
+                    fontSize={15}
+                    color="black"
+                    secureTextEntry={true}
+                    onChangeText={value => setConfirmPassword(value)}
+                    InputLeftElement={
+                      <Icon
+                        as={<IconVector name="check" />}
+                        size="6"
+                        ml={3}
+                        color="black"
+                        marginRight={2}
+                      />
+                    }
+                    placeholder="Potvrdi lozinku"
+                  />
+                  <FormControl.ErrorMessage
+                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                    {validationError.confirmPassword}
+                  </FormControl.ErrorMessage>
+                </FormControl>
+                {signUpSuccess && (
+                  <Center marginBottom={2}>
+                    <Text fontSize={16}>Uspješna registracija</Text>
+                  </Center>
+                )}
+              </VStack>
+              <VStack flex={0.2}>
+                <Center marginY="5%">
+                  <TouchableOpacity style={styles.button} onPress={SignUpUser}>
+                    <Text style={styles.buttonText}>Registriraj se</Text>
+                  </TouchableOpacity>
 
-          <View style={styles.footerView}>
-            <Text style={styles.footerText}>
-              © 2022 Bookingster - Sva prava pridržana.
-            </Text>
-          </View>
+                  <HStack marginY={3}>
+                    <GoogleSigninButton
+                      onPress={onGoogleButtonPress}
+                      style={{width: 200, height: 50}}
+                      size={GoogleSigninButton.Size.Wide}
+                      color={
+                        GoogleSigninButton.Color.Light
+                      }></GoogleSigninButton>
+                  </HStack>
+                </Center>
+              </VStack>
+              <HStack
+                flex={0.1}
+                width="100%"
+                position="absolute"
+                justifyContent="center"
+                alignItems="center"
+                bottom={1}>
+                <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
+              </HStack>
+            </Box>
+          </Center>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
