@@ -33,7 +33,7 @@ GoogleSignin.configure({
 });
 const styles = signupStyle;
 
-const SignUp = () => {
+const SignUp = ({signUpType}) => {
   const [SignUpUrl, setSignUpUrl] = useState();
   const [GoogleUrl, setGoogleUrl] = useState();
   const [email, setEmail] = useState(null);
@@ -115,7 +115,7 @@ const SignUp = () => {
               _dark={{
                 color: 'warmGray.50',
               }}>
-              Registracija
+              Registracija, {signUpType}
             </Heading>
           </View>
           <Center flex={1} justifyContent="space-between" w="100%">

@@ -1,21 +1,16 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from 'react-native';
+
 import {NativeBaseProvider} from 'native-base';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
+import Welcome from './components/welcome/Welcome';
+import Choice from './components/choice/Choice';
+import WelcomeScreenNavigator from './navigator/WelcomeScreenNavigator';
 const App = () => {
   return (
     <NativeBaseProvider>
-      <Login />
+      <WelcomeScreenNavigator />
     </NativeBaseProvider>
   );
 };
