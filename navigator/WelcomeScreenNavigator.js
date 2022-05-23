@@ -21,7 +21,7 @@ const WelcomeScreenNavigator = () => {
           component={Login}></Stack.Screen>
         <Stack.Screen
           options={{headerShown: false}}
-          name="Choice"
+          name="Choice_navigator"
           component={ChoiceScreenNavigator}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

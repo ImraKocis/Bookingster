@@ -27,15 +27,14 @@ import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import api_get_googleKey from '../../assets/getKeys';
 
-GoogleSignin.configure({
-  webClientId: 'x',
-});
 const styles = signupStyle;
 
 const SignUp = ({signUpType}) => {
   const [SignUpUrl, setSignUpUrl] = useState();
   const [GoogleUrl, setGoogleUrl] = useState();
+  const [googleKey, setGoogleKey] = useState();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
@@ -91,7 +90,18 @@ const SignUp = ({signUpType}) => {
     setSignUpSuccess(true);
     return credentials;
   };
+
+  GoogleSignin.configure({
+    webClientId: googleKey,
+  });
+
+  const get_google_key = async () => {
+    const res = await api_get_googleKey();
+    setGoogleKey(res);
+  };
+
   useEffect(() => {
+    get_google_key();
     GetUrls();
   }, []);
   return (

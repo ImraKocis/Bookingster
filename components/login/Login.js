@@ -28,15 +28,14 @@ import {
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 import {LoadSignInImg, LoadGoogleImg} from '../../assets/getImages';
+import api_get_googleKey from '../../assets/getKeys';
 
-GoogleSignin.configure({
-  webClientId: 'x',
-});
 const styles = loginStyle;
 
 export default function Login() {
   const [SignUpUrl, setSignUpUrl] = useState('');
   const [GoogleUrl, setGoogleUrl] = useState('');
+  const [googleKey, setGoogleKey] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [initializing, setInitializing] = useState(true);
@@ -72,7 +71,9 @@ export default function Login() {
     }
     setValidationError(errors);
   };
-
+  GoogleSignin.configure({
+    webClientId: googleKey,
+  });
   const LogoutUser = () => {
     auth().signOut();
   };
@@ -88,8 +89,14 @@ export default function Login() {
     return credentials;
   };
 
+  const get_google_key = async () => {
+    const res = await api_get_googleKey();
+    setGoogleKey(res);
+  };
+
   useEffect(() => {
     GetUrls();
+    get_google_key();
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);

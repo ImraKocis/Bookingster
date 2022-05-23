@@ -51,7 +51,7 @@ export default function Welcome({navigation}) {
             <Center>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('Choice')}>
+                onPress={() => navigation.navigate('Choice_navigator')}>
                 <Text style={styles.buttonText}>Novi račun</Text>
               </TouchableOpacity>
             </Center>
