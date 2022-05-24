@@ -8,11 +8,15 @@ import Welcome from './components/welcome/Welcome';
 import Choice from './components/choice/Choice';
 import Hint from './ugostiteljRegistration/Hint';
 import WelcomeScreenNavigator from './navigator/WelcomeScreenNavigator';
+import store from './redux/store';
+import {Provider} from 'react-redux';
 const App = () => {
   return (
-    <NativeBaseProvider>
-      <WelcomeScreenNavigator />
-    </NativeBaseProvider>
+    <Provider store={store}>
+      <NativeBaseProvider>
+        <WelcomeScreenNavigator />
+      </NativeBaseProvider>
+    </Provider>
   );
 };
 

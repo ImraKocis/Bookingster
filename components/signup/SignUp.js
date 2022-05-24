@@ -17,24 +17,24 @@ import {
   HStack,
   Text,
 } from 'native-base';
-
+import {useDispatch, useSelector} from 'react-redux';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
 import React, {useState, useEffect} from 'react';
 import {signupStyle} from './signupStyle';
-import {LoadSignUpImg, LoadGoogleImg} from '../../assets/getImages';
+import {LoadSignUpImg} from '../../assets/getImages';
 import auth from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import api_get_googleKey from '../../assets/getKeys';
+import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
 
 const styles = signupStyle;
 
 const SignUp = ({signUpType}) => {
+  const google_key = useSelector(selectorGoogle);
+  const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState();
-  const [GoogleUrl, setGoogleUrl] = useState();
-  const [googleKey, setGoogleKey] = useState();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
@@ -45,7 +45,6 @@ const SignUp = ({signUpType}) => {
 
   const GetUrls = async () => {
     setSignUpUrl(await LoadSignUpImg());
-    setGoogleUrl(await LoadGoogleImg());
   };
   const SignUpUser = () => {
     var errors = {};
@@ -92,16 +91,11 @@ const SignUp = ({signUpType}) => {
   };
 
   GoogleSignin.configure({
-    webClientId: googleKey,
+    webClientId: google_key,
   });
 
-  const get_google_key = async () => {
-    const res = await api_get_googleKey();
-    setGoogleKey(res);
-  };
-
   useEffect(() => {
-    get_google_key();
+    dispatch(fetchGoogleKey());
     GetUrls();
   }, []);
   return (

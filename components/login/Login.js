@@ -1,7 +1,6 @@
 import {
   Image,
   SafeAreaView,
-  TextInput,
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -20,35 +19,48 @@ import {
 } from 'native-base';
 import React, {useState, useEffect} from 'react';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
-
+import {useSelector, useDispatch} from 'react-redux';
 import {loginStyle} from './loginStyle';
 import auth from '@react-native-firebase/auth';
+
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import {LoadSignInImg, LoadGoogleImg} from '../../assets/getImages';
-import api_get_googleKey from '../../assets/getKeys';
+import {LoadSignInImg} from '../../assets/getImages';
+import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
+import {login, logout, selectUser} from '../../redux/features/userSlice';
 
 const styles = loginStyle;
 
 export default function Login() {
+  const google_key = useSelector(selectorGoogle);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState('');
-  const [GoogleUrl, setGoogleUrl] = useState('');
-  const [googleKey, setGoogleKey] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
   const [validationError, setValidationError] = useState({});
 
   const onAuthStateChanged = user => {
-    setUser(user);
+    if (user) {
+      dispatch(
+        login({
+          email: user.email,
+          uid: user.uid,
+          displayName: user.displayName,
+          photoUrl: user.photoURL,
+        }),
+      );
+    } else {
+      dispatch(logout());
+    }
+
     if (initializing) setInitializing(false);
   };
   const GetUrls = async () => {
     setSignUpUrl(await LoadSignInImg());
-    setGoogleUrl(await LoadGoogleImg());
   };
 
   const LoginUser = () => {
@@ -72,7 +84,7 @@ export default function Login() {
     setValidationError(errors);
   };
   GoogleSignin.configure({
-    webClientId: googleKey,
+    webClientId: google_key,
   });
   const LogoutUser = () => {
     auth().signOut();
@@ -89,15 +101,11 @@ export default function Login() {
     return credentials;
   };
 
-  const get_google_key = async () => {
-    const res = await api_get_googleKey();
-    setGoogleKey(res);
-  };
-
   useEffect(() => {
     GetUrls();
-    get_google_key();
+    dispatch(fetchGoogleKey());
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
     return subscriber;
   }, []);
 
