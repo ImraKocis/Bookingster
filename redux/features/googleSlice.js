@@ -23,7 +23,12 @@ export default googleSlice.reducer;
 
 export function fetchGoogleKey() {
   return async dispatch => {
-    var result = await instance.get('configuration');
-    dispatch(setGoogleKey(result.data));
+    try {
+      const response = await instance.get('configuration');
+      dispatch(setGoogleKey(response.data.googleClientId));
+      return response;
+    } catch (error) {
+      console.error(error.response.data.errorMessage);
+    }
   };
 }

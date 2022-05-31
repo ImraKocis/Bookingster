@@ -28,11 +28,18 @@ import {
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
+import {
+  login,
+  logout,
+  updateUserInfo,
+  selectUser,
+} from '../../redux/features/userSlice';
 
 const styles = signupStyle;
 
 const SignUp = ({signUpType}) => {
   const google_key = useSelector(selectorGoogle);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState();
   const [email, setEmail] = useState(null);
@@ -42,6 +49,27 @@ const SignUp = ({signUpType}) => {
   const [prezime, setPrezime] = useState(null);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [validationError, setValidationError] = useState({});
+  const [initializing, setInitializing] = useState(true);
+
+  const onAuthStateChanged = user_firebase => {
+    if (user_firebase) {
+      dispatch(
+        login({
+          displayName:
+            user_firebase.displayName != null
+              ? user_firebase.displayName
+              : ime + ' ' + prezime,
+          email: user_firebase.email,
+          photo_url: user_firebase.photo_url,
+          uid: user_firebase.uid,
+        }),
+      );
+    } else {
+      dispatch(logout());
+    }
+
+    if (initializing) setInitializing(false);
+  };
 
   const GetUrls = async () => {
     setSignUpUrl(await LoadSignUpImg());
@@ -55,6 +83,7 @@ const SignUp = ({signUpType}) => {
       errors.confirmPassword = 'Lozinke se moraju podudarati';
     if (!password) errors.password = 'Lozinka je obavezna';
     if (!email) errors.email = 'Email je obavezan';
+
     if (email && password) {
       auth()
         .createUserWithEmailAndPassword(email, password)
@@ -84,7 +113,11 @@ const SignUp = ({signUpType}) => {
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
-      console.log(credential.additionalUserInfo.isNewUser);
+      dispatch(
+        updateUserInfo({
+          isNewUser: credential.additionalUserInfo.isNewUser,
+        }),
+      );
     });
     setSignUpSuccess(true);
     return credentials;
@@ -97,7 +130,11 @@ const SignUp = ({signUpType}) => {
   useEffect(() => {
     dispatch(fetchGoogleKey());
     GetUrls();
+
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
   }, []);
+  if (initializing) return null;
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.imageContainer}>
@@ -178,6 +215,7 @@ const SignUp = ({signUpType}) => {
                     variant="underlined"
                     fontSize={15}
                     color="black"
+                    keyboardType="email-address"
                     onChangeText={value => setEmail(value)}
                     InputLeftElement={
                       <Icon
@@ -255,6 +293,7 @@ const SignUp = ({signUpType}) => {
                 </FormControl>
                 {signUpSuccess && (
                   <Center marginBottom={2}>
+                    {console.log(user)}
                     <Text fontSize={16}>Uspješna registracija</Text>
                   </Center>
                 )}

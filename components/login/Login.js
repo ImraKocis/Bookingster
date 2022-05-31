@@ -29,7 +29,12 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {LoadSignInImg} from '../../assets/getImages';
 import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
-import {login, logout, selectUser} from '../../redux/features/userSlice';
+import {
+  login,
+  logout,
+  updateUserInfo,
+  selectUser,
+} from '../../redux/features/userSlice';
 
 const styles = loginStyle;
 
@@ -43,14 +48,14 @@ export default function Login() {
   const [initializing, setInitializing] = useState(true);
   const [validationError, setValidationError] = useState({});
 
-  const onAuthStateChanged = user => {
-    if (user) {
+  const onAuthStateChanged = user_firebase => {
+    if (user_firebase) {
       dispatch(
         login({
-          email: user.email,
-          uid: user.uid,
-          displayName: user.displayName,
-          photoUrl: user.photoURL,
+          email: user_firebase.email,
+          uid: user_firebase.uid,
+          displayName: user_firebase.displayName,
+          photoUrl: user_firebase.photoURL,
         }),
       );
     } else {
@@ -96,7 +101,11 @@ export default function Login() {
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
-      console.log(credential.additionalUserInfo.isNewUser);
+      dispatch(
+        updateUserInfo({
+          isNewUser: credential.additionalUserInfo.isNewUser,
+        }),
+      );
     });
     return credentials;
   };
@@ -104,6 +113,7 @@ export default function Login() {
   useEffect(() => {
     GetUrls();
     dispatch(fetchGoogleKey());
+
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     return subscriber;
@@ -149,6 +159,7 @@ export default function Login() {
                       <Input
                         variant="underlined"
                         fontSize={15}
+                        keyboardType="email-address"
                         color="black"
                         onChangeText={value => setEmail(value)}
                         InputLeftElement={
