@@ -23,10 +23,11 @@ export default googleSlice.reducer;
 
 export function fetchGoogleKey() {
   return async dispatch => {
+    console.log('Google token dispatching');
     try {
       const response = await instance.get('configuration');
+      //console.log(response);
       dispatch(setGoogleKey(response.data.googleClientId));
-      return response;
     } catch (error) {
       console.error(error.response.data.errorMessage);
     }

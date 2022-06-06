@@ -34,7 +34,7 @@ import {
   updateUserInfo,
   selectUser,
 } from '../../redux/features/userSlice';
-
+import userPost from '../../api/userPost';
 const styles = signupStyle;
 
 const SignUp = ({signUpType}) => {
@@ -42,28 +42,48 @@ const SignUp = ({signUpType}) => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState();
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
-  const [ime, setIme] = useState(null);
-  const [prezime, setPrezime] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [ime, setIme] = useState('');
+  const [prezime, setPrezime] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [validationError, setValidationError] = useState({});
   const [initializing, setInitializing] = useState(true);
+  const [userFB, setUserFB] = useState(null);
+  const [isGoogleLogin, setIsGoogleLogin] = useState(false);
+
+  const saveUserToFirebase = () => {
+    console.log('SIGNUPTYPE =>', signUpType);
+    dispatch(
+      login({
+        name:
+          userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
+        email: userFB.email,
+        photo_url: userFB.photo_url == null ? null : userFB.photo_url,
+        uid: userFB.uid,
+        accountType: signUpType,
+        isNewUser: true,
+      }),
+    );
+    userPost(signUpType, {
+      name:
+        userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
+      email: userFB.email,
+      photo_url: userFB.photo_url == null ? null : userFB.photo_url,
+      uid: userFB.uid,
+    }).then(response => {
+      console.log('API RESPONSE =>', response);
+    });
+  };
 
   const onAuthStateChanged = user_firebase => {
+    console.log('uso u auth state changed');
     if (user_firebase) {
-      dispatch(
-        login({
-          displayName:
-            user_firebase.displayName != null
-              ? user_firebase.displayName
-              : ime + ' ' + prezime,
-          email: user_firebase.email,
-          photo_url: user_firebase.photo_url,
-          uid: user_firebase.uid,
-        }),
-      );
+      setUserFB(user_firebase);
+      setSignUpSuccess(true);
+      console.log('USER_FIREBASE LOG => ', user_firebase);
+      console.log('EMAIL => ', user_firebase.email);
     } else {
       dispatch(logout());
     }
@@ -76,8 +96,8 @@ const SignUp = ({signUpType}) => {
   };
   const SignUpUser = () => {
     var errors = {};
-    if (!ime || ime.trim().lenght < 1) errors.ime = 'Ime je obavezno';
-    if (!prezime || prezime.trim().lenght < 1)
+    if (!ime || ime.trim().length < 1) errors.ime = 'Ime je obavezno';
+    if (!prezime || prezime.trim().length < 1)
       errors.prezime = 'Prezime je obavezno';
     if (password != confirmPassword)
       errors.confirmPassword = 'Lozinke se moraju podudarati';
@@ -89,7 +109,7 @@ const SignUp = ({signUpType}) => {
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
           console.log('User account created & signed in!');
-          setSignUpSuccess(true);
+          console.log(ime, prezime);
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -113,13 +133,15 @@ const SignUp = ({signUpType}) => {
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
+      //saveUserToFirebase();
       dispatch(
         updateUserInfo({
           isNewUser: credential.additionalUserInfo.isNewUser,
+          accountType: signUpType,
         }),
       );
     });
-    setSignUpSuccess(true);
+
     return credentials;
   };
 
@@ -134,6 +156,12 @@ const SignUp = ({signUpType}) => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+
+  useEffect(() => {
+    if (userFB) {
+      saveUserToFirebase();
+    }
+  }, [userFB]);
   if (initializing) return null;
   return (
     <SafeAreaView style={styles.mainView}>
@@ -156,7 +184,7 @@ const SignUp = ({signUpType}) => {
               _dark={{
                 color: 'warmGray.50',
               }}>
-              Registracija, {signUpType}
+              Registracija,{signUpType}
             </Heading>
           </View>
           <Center flex={1} justifyContent="space-between" w="100%">
@@ -171,7 +199,6 @@ const SignUp = ({signUpType}) => {
                       _text={{
                         color: 'red',
                       }}
-                      onChangeText={value => setIme(value)}
                       InputLeftElement={
                         <Icon
                           as={<IconVector name="person-outline" />}
@@ -182,6 +209,8 @@ const SignUp = ({signUpType}) => {
                         />
                       }
                       placeholder="Ime"
+                      onChangeText={text => setIme(text)}
+                      value={ime}
                     />
                     <FormControl.ErrorMessage
                       leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -196,6 +225,7 @@ const SignUp = ({signUpType}) => {
                       fontSize={15}
                       color="black"
                       onChangeText={value => setPrezime(value)}
+                      value={prezime}
                       placeholder="Prezime"
                     />
                     <FormControl.ErrorMessage
@@ -217,6 +247,7 @@ const SignUp = ({signUpType}) => {
                     color="black"
                     keyboardType="email-address"
                     onChangeText={value => setEmail(value)}
+                    value={email}
                     InputLeftElement={
                       <Icon
                         as={<IconVector name="alternate-email" />}
@@ -246,6 +277,7 @@ const SignUp = ({signUpType}) => {
                     color="black"
                     secureTextEntry={true}
                     onChangeText={value => setPassword(value)}
+                    value={password}
                     InputLeftElement={
                       <Icon
                         as={<IconVector name="lock-outline" />}
@@ -275,6 +307,7 @@ const SignUp = ({signUpType}) => {
                     color="black"
                     secureTextEntry={true}
                     onChangeText={value => setConfirmPassword(value)}
+                    value={confirmPassword}
                     InputLeftElement={
                       <Icon
                         as={<IconVector name="check" />}
@@ -293,8 +326,12 @@ const SignUp = ({signUpType}) => {
                 </FormControl>
                 {signUpSuccess && (
                   <Center marginBottom={2}>
-                    {console.log(user)}
-                    <Text fontSize={16}>Uspješna registracija</Text>
+                    {user && console.log('USER.USER', user)}
+                    {user && !user.isNewUser ? (
+                      <Text fontSize={16}>Uspješna prijava</Text>
+                    ) : (
+                      <Text fontSize={16}>Uspješna registracija</Text>
+                    )}
                   </Center>
                 )}
               </VStack>

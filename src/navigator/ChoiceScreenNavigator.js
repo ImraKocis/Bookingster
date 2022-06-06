@@ -13,10 +13,10 @@ const ChoiceScreenNavigator = () => {
         name="Choice"
         component={Choice}></Stack.Screen>
       <Stack.Screen options={{headerShown: false}} name="Novi_racun_ugostitelj">
-        {props => <SignUp {...props} signUpType={'ugostitelj'} />}
+        {props => <SignUp {...props} signUpType={'1'} />}
       </Stack.Screen>
       <Stack.Screen options={{headerShown: false}} name="Novi_racun_korisnik">
-        {props => <SignUp {...props} signUpType={'korisnik'} />}
+        {props => <SignUp {...props} signUpType={'0'} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

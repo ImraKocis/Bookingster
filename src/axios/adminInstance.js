@@ -7,10 +7,4 @@ const instance = axios.create({
   headers: {authorization: 'Bearer ' + ADMIN_TOKEN},
 });
 
-const userPostInstance = axios.create({
-  baseURL: 'https://bookingsterapi.oa.r.appspot.com/bookingster/api/user/',
-  timeout: 1000,
-  headers: {authorization: 'Bearer ' + ADMIN_TOKEN},
-});
-
-export default {instance, userPostInstance};
+export default instance;
