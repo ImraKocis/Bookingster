@@ -8,18 +8,13 @@ import {useSelector} from 'react-redux';
 //tab navigator koji ce gledata dali je logan korisnik ili ugostitelj
 const LogedInNavigator = () => {
   const user = useSelector(selectUser);
-
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      {/* {console.log(user.accountType)}
+  /* {console.log(user.accountType)}
       {user.accountType == 0 ? (
         <UserTabNavigator />
       ) : (
         <EstablishmentOwnerNavigator />
-      )} */}
-      <UserTabNavigator />
-    </View>
-  );
+      )} */
+  return <UserTabNavigator />;
 };
 
 export default LogedInNavigator;

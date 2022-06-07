@@ -23,10 +23,15 @@ const WelcomeScreenNavigator = ({onAuthStateChanged, initializing}) => {
           />
         )}
       </Stack.Screen>
-      <Stack.Screen
-        options={{headerShown: false}}
-        name="Choice_navigator"
-        component={ChoiceScreenNavigator}></Stack.Screen>
+      <Stack.Screen options={{headerShown: false}} name="Choice_navigator">
+        {props => (
+          <ChoiceScreenNavigator
+            {...props}
+            onAuthStateChanged={onAuthStateChanged}
+            initializing={initializing}
+          />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

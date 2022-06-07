@@ -37,7 +37,7 @@ import {
 import userPost from '../../api/userPost';
 const styles = signupStyle;
 
-const SignUp = ({signUpType}) => {
+const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
   const google_key = useSelector(selectorGoogle);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -49,9 +49,8 @@ const SignUp = ({signUpType}) => {
   const [prezime, setPrezime] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [validationError, setValidationError] = useState({});
-  const [initializing, setInitializing] = useState(true);
+
   const [userFB, setUserFB] = useState(null);
-  const [isGoogleLogin, setIsGoogleLogin] = useState(false);
 
   const saveUserToFirebase = () => {
     console.log('SIGNUPTYPE =>', signUpType);
@@ -77,20 +76,6 @@ const SignUp = ({signUpType}) => {
     });
   };
 
-  const onAuthStateChanged = user_firebase => {
-    console.log('uso u auth state changed');
-    if (user_firebase) {
-      setUserFB(user_firebase);
-      setSignUpSuccess(true);
-      console.log('USER_FIREBASE LOG => ', user_firebase);
-      console.log('EMAIL => ', user_firebase.email);
-    } else {
-      dispatch(logout());
-    }
-
-    if (initializing) setInitializing(false);
-  };
-
   const GetUrls = async () => {
     setSignUpUrl(await LoadSignUpImg());
   };
@@ -107,9 +92,12 @@ const SignUp = ({signUpType}) => {
     if (email && password) {
       auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => {
+        .then(userCredentials => {
+          //console.log('USER => ', userFirebase);
+          setUserFB(userCredentials.user);
+          setSignUpSuccess(true);
           console.log('User account created & signed in!');
-          console.log(ime, prezime);
+          //console.log(ime, prezime);
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -133,6 +121,9 @@ const SignUp = ({signUpType}) => {
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
+      setUserFB(credential.user);
+
+      setSignUpSuccess(true);
       //saveUserToFirebase();
       dispatch(
         updateUserInfo({
@@ -196,9 +187,6 @@ const SignUp = ({signUpType}) => {
                       variant="underlined"
                       fontSize={15}
                       color="black"
-                      _text={{
-                        color: 'red',
-                      }}
                       InputLeftElement={
                         <Icon
                           as={<IconVector name="person-outline" />}
@@ -326,7 +314,6 @@ const SignUp = ({signUpType}) => {
                 </FormControl>
                 {signUpSuccess && (
                   <Center marginBottom={2}>
-                    {user && console.log('USER.USER', user)}
                     {user && !user.isNewUser ? (
                       <Text fontSize={16}>Uspješna prijava</Text>
                     ) : (

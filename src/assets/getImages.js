@@ -1,4 +1,3 @@
-import react from 'react';
 import storage from '@react-native-firebase/storage';
 
 const LoadSignInImg = async () => {
@@ -25,10 +24,17 @@ const LoadWelcomeImg = async () => {
   const welcomeImg = await storage().ref('Welcome.png').getDownloadURL();
   return welcomeImg;
 };
+
+const LoadTestImage = async () => {
+  const testImg = await storage().ref('ivona.jpg').getDownloadURL();
+  return testImg;
+};
+
 export {
   LoadSignInImg,
   LoadGoogleImg,
   LoadSignUpImg,
   LoadChoiceImg,
   LoadWelcomeImg,
+  LoadTestImage,
 };

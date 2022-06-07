@@ -1,10 +1,10 @@
 import react from 'react';
 import {StyleSheet} from 'react-native';
-import {primary} from '../../assets/getColors';
+import {primary, backgroundColor} from '../../assets/getColors';
 
 export const signupStyle = StyleSheet.create({
   container: {flex: 1},
-  mainView: {flex: 1, backgroundColor: '#dfdfdf'},
+  mainView: {flex: 1, backgroundColor: backgroundColor},
   paperView: {
     flex: 1,
     backgroundColor: 'white',

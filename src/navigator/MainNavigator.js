@@ -12,6 +12,15 @@ const MainNavigator = () => {
   const [initializing, setInitializing] = useState(true);
   const onAuthStateChanged = user_firebase => {
     if (user_firebase) {
+      auth()
+        .currentUser.getIdToken(/* forceRefresh */ true)
+        .then(function (idToken) {
+          console.log('idToken =>', idToken);
+          // dispatch(updateUserInfo({jwt: idToken}));
+        })
+        .catch(function (error) {
+          console.log('JWT_ERROR =>', error);
+        });
       dispatch(
         login({
           email: user_firebase.email,
@@ -43,6 +52,7 @@ const MainNavigator = () => {
         />
       )} */}
       <LogedInNavigator />
+      {/* <WelcomeScreenNavigator onAuthStateChanged={onAuthStateChanged} /> */}
     </NavigationContainer>
   );
 };
