@@ -1,14 +1,25 @@
-import {View, Text} from 'react-native';
+import {View, Image} from 'react-native';
 import React from 'react';
 import {userProfileStyles} from '../styles/userProfileStyles';
-import {Heading} from 'native-base';
+import {Heading, Text} from 'native-base';
 const styles = userProfileStyles;
 const UserInfo = () => {
   return (
     <View style={styles.userInfo__mainView}>
-      <Heading size={'xl'} fontWeight={400}>
-        Osobni podaci
-      </Heading>
+      <View style={styles.userInfo__photoView}>
+        <Image
+          style={styles.userInfo__photo}
+          source={{
+            uri: 'https://ui-avatars.com/api/?name=IVAN+HORVAT&background=random&rounded=true',
+          }}
+        />
+      </View>
+      <View style={styles.userInfo__nameView}>
+        <Heading size={'xl'} fontWeight={400}>
+          Ivan Horvat
+        </Heading>
+        <Text color={'gray.500'}>ivan.horvat@gmial.com</Text>
+      </View>
     </View>
   );
 };

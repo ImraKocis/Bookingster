@@ -118,7 +118,7 @@ export const userHomeStyles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
   },
-  profile__imageVeiw: {
+  profile__imageView: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,

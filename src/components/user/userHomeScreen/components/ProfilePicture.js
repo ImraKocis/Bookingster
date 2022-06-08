@@ -7,6 +7,7 @@ const styles = userHomeStyles;
 const ProfilePicture = () => {
   return (
     <View style={styles.profile__view}>
+      {/*touchableOpacity is used to make the image clickable*/}
       <View style={styles.profile__imageView}>
         <Image
           style={styles.profile__image}
