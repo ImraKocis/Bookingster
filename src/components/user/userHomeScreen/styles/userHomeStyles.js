@@ -29,6 +29,7 @@ export const userHomeStyles = StyleSheet.create({
     maxHeight: 120,
     width: '90%',
     alignSelf: 'center',
+    marginBottom: 10,
   },
   longCard__Button: {
     flex: 0.3,

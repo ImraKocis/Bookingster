@@ -7,7 +7,7 @@ const styles = userHomeStyles;
 const ProfilePicture = () => {
   return (
     <View style={styles.profile__view}>
-      <View style={styles.profile__imageVeiw}>
+      <View style={styles.profile__imageView}>
         <Image
           style={styles.profile__image}
           source={{

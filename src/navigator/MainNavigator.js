@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
 import {NavigationContainer} from '@react-navigation/native';
 import WelcomeScreenNavigator from './WelcomeScreenNavigator';
-import LogedInNavigator from './LogedInNavigator';
+import LoggedInNavigator from './LogedInNavigator';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUser, login, logout} from '../redux/features/userSlice';
 
@@ -44,14 +44,14 @@ const MainNavigator = () => {
     <NavigationContainer>
       {/* {user && console.log('USER NAVIGATOR', user)}
       {user && user ? (
-        <LogedInNavigator />
+        <LoggedInNavigator />
       ) : (
         <WelcomeScreenNavigator
           onAuthStateChanged={onAuthStateChanged}
           initializing={initializing}
         />
       )} */}
-      <LogedInNavigator />
+      <LoggedInNavigator />
       {/* <WelcomeScreenNavigator onAuthStateChanged={onAuthStateChanged} /> */}
     </NavigationContainer>
   );

@@ -6,7 +6,7 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 
 //tab navigator koji ce gledata dali je logan korisnik ili ugostitelj
-const LogedInNavigator = () => {
+const LoggedInNavigator = () => {
   const user = useSelector(selectUser);
   /* {console.log(user.accountType)}
       {user.accountType == 0 ? (
@@ -17,4 +17,4 @@ const LogedInNavigator = () => {
   return <UserTabNavigator />;
 };
 
-export default LogedInNavigator;
+export default LoggedInNavigator;
