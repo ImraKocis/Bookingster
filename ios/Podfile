@@ -21,6 +21,8 @@ target 'Bookingster' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
+
   target 'BookingsterTests' do
     inherit! :complete
     # Pods for testing

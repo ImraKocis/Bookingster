@@ -5,6 +5,7 @@ import WelcomeScreenNavigator from './WelcomeScreenNavigator';
 import LoggedInNavigator from './LogedInNavigator';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUser, login, logout} from '../redux/features/userSlice';
+import EstablishmentRegistrationNavigator from './EstablishmentRegistrationNavigator';
 
 const MainNavigator = () => {
   const user = useSelector(selectUser);
@@ -42,6 +43,7 @@ const MainNavigator = () => {
 
   return (
     <NavigationContainer>
+      <EstablishmentRegistrationNavigator />
       {/* {user && console.log('USER NAVIGATOR', user)}
       {user && user ? (
         <LoggedInNavigator />
@@ -51,7 +53,7 @@ const MainNavigator = () => {
           initializing={initializing}
         />
       )} */}
-      <LoggedInNavigator />
+      {/* <LoggedInNavigator /> */}
       {/* <WelcomeScreenNavigator onAuthStateChanged={onAuthStateChanged} /> */}
     </NavigationContainer>
   );
