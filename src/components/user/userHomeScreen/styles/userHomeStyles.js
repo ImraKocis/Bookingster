@@ -5,20 +5,23 @@ export const userHomeStyles = StyleSheet.create({
     width: 140,
     height: 95,
     borderRadius: 10,
+    marginHorizontal: 10,
   },
   image__long: {
     width: 140,
     height: 95,
     borderRadius: 10,
     marginLeft: 10,
+    marginVertical: 10,
   },
   CardView: {
     flex: 1,
     backgroundColor: 'white',
     elevation: 10,
     borderRadius: 20,
-    maxWidth: 165,
-    maxHeight: 185,
+    maxWidth: 175,
+    minHeight: 185,
+    margin: 10,
   },
   LongCardView: {
     flex: 1,
@@ -26,7 +29,8 @@ export const userHomeStyles = StyleSheet.create({
     backgroundColor: 'white',
     elevation: 10,
     borderRadius: 20,
-    maxHeight: 120,
+    maxHeight: 150,
+
     width: '90%',
     alignSelf: 'center',
     marginBottom: 10,
@@ -124,5 +128,11 @@ export const userHomeStyles = StyleSheet.create({
     flex: 1,
   },
   profile__image: {width: 50, height: 50},
-  HeaderView: {marginLeft: 15, marginBottom: 10, marginTop: 30},
+  HeaderView: {
+    flex: 1,
+
+    marginLeft: 15,
+    marginBottom: 10,
+    marginTop: 30,
+  },
 });

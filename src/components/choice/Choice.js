@@ -3,16 +3,31 @@ import {Text, HStack, VStack, Center, Heading} from 'native-base';
 import React, {useState, useEffect} from 'react';
 import {LoadChoiceImg} from '../../assets/getImages';
 import {choiceStyle} from './choiceStyle';
-
+import userPost from '../../api/userPost';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectUser, updateUserInfo} from '../../redux/features/userSlice';
 const styles = choiceStyle;
 
-export default function Choice({navigation}) {
+export default function Choice({navigation, isNewUser, setUserInfo}) {
   const [choiceImg, setChoiceImg] = useState();
-
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const GetUrls = async () => {
     setChoiceImg(await LoadChoiceImg());
   };
-
+  const saveUserToFirebase = signUpType => {
+    console.log('signUpType', signUpType);
+    dispatch(updateUserInfo({accountType: signUpType}));
+    userPost(signUpType, {
+      name: user.displayName,
+      email: user.email,
+      //photoUrl: user.photoUrl == null ? null : user.photoUrl,
+      uid: user.uid,
+    }).then(response => {
+      setUserInfo(response.user);
+      //console.log('API RESPONSE =>', response.user);
+    });
+  };
   useEffect(() => {
     GetUrls();
   }, []);
@@ -41,9 +56,14 @@ export default function Choice({navigation}) {
           <HStack marginY={7}>
             <Center>
               {/*navigacija na novi racun te ugostitelj hint, itd. */}
+              {console.log('isNewUser', isNewUser)}
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('Novi_racun_ugostitelj')}>
+                onPress={() =>
+                  isNewUser
+                    ? saveUserToFirebase(1)
+                    : navigation.navigate('Novi_racun_ugostitelj')
+                }>
                 <Text style={styles.buttonText}>Ugostitelj</Text>
               </TouchableOpacity>
             </Center>
@@ -53,7 +73,11 @@ export default function Choice({navigation}) {
               {/*navigacija na novi reacun te prijavu */}
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('Novi_racun_korisnik')}>
+                onPress={() =>
+                  isNewUser
+                    ? saveUserToFirebase(0)
+                    : navigation.navigate('Novi_racun_korisnik')
+                }>
                 <Text style={styles.buttonText}>Korisnik</Text>
               </TouchableOpacity>
             </Center>

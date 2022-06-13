@@ -38,9 +38,14 @@ import {
 
 const styles = loginStyle;
 
-export default function Login({onAuthStateChanged, initializing}) {
+export default function Login({
+  onAuthStateChanged,
+  initializing,
+  setUserInfo,
+  setIsNewUser,
+}) {
   const google_key = useSelector(selectorGoogle);
-  const user = useSelector(selectUser);
+  //const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState('');
   const [email, setEmail] = useState();
@@ -82,8 +87,10 @@ export default function Login({onAuthStateChanged, initializing}) {
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
+      setIsNewUser(credential.additionalUserInfo.isNewUser);
       dispatch(
         updateUserInfo({
+          accountType: null,
           isNewUser: credential.additionalUserInfo.isNewUser,
         }),
       );

@@ -7,7 +7,12 @@ import ChoiceScreenNavigator from './ChoiceScreenNavigator';
 
 const Stack = createStackNavigator();
 
-const WelcomeScreenNavigator = ({onAuthStateChanged, initializing}) => {
+const WelcomeScreenNavigator = ({
+  onAuthStateChanged,
+  initializing,
+  setUserInfo,
+}) => {
+  // const [set]
   return (
     <Stack.Navigator initialRouteName="Welcome">
       <Stack.Screen
@@ -18,6 +23,8 @@ const WelcomeScreenNavigator = ({onAuthStateChanged, initializing}) => {
         {props => (
           <Login
             {...props}
+            setIsNewUser={setIsNewUser}
+            setUserInfo={setUserInfo}
             onAuthStateChanged={onAuthStateChanged}
             initializing={initializing}
           />
@@ -27,6 +34,7 @@ const WelcomeScreenNavigator = ({onAuthStateChanged, initializing}) => {
         {props => (
           <ChoiceScreenNavigator
             {...props}
+            setUserInfo={setUserInfo}
             onAuthStateChanged={onAuthStateChanged}
             initializing={initializing}
           />

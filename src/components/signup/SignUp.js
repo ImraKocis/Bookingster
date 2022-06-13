@@ -37,7 +37,12 @@ import {
 import userPost from '../../api/userPost';
 const styles = signupStyle;
 
-const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
+const SignUp = ({
+  signUpType,
+  onAuthStateChanged,
+  initializing,
+  setUserInfo,
+}) => {
   const google_key = useSelector(selectorGoogle);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -54,17 +59,18 @@ const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
 
   const saveUserToFirebase = () => {
     console.log('SIGNUPTYPE =>', signUpType);
-    dispatch(
-      login({
-        name:
-          userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
-        email: userFB.email,
-        photo_url: userFB.photo_url == null ? null : userFB.photo_url,
-        uid: userFB.uid,
-        accountType: signUpType,
-        isNewUser: true,
-      }),
-    );
+    // dispatch(
+    //   login({
+    //     name:
+    //       userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
+    //     email: userFB.email,
+    //     photo_url: userFB.photo_url == null ? null : userFB.photo_url,
+    //     uid: userFB.uid,
+    //     accountType: signUpType,
+    //     isNewUser: true,
+    //   }),
+    // );
+
     userPost(signUpType, {
       name:
         userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
@@ -72,7 +78,8 @@ const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
       photo_url: userFB.photo_url == null ? null : userFB.photo_url,
       uid: userFB.uid,
     }).then(response => {
-      console.log('API RESPONSE =>', response);
+      setUserInfo(response.user);
+      console.log('API RESPONSE =>', response.user);
     });
   };
 
@@ -149,6 +156,7 @@ const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
   }, []);
 
   useEffect(() => {
+    console.log('userFB =>', userFB);
     if (userFB) {
       saveUserToFirebase();
     }
@@ -175,7 +183,7 @@ const SignUp = ({signUpType, onAuthStateChanged, initializing}) => {
               _dark={{
                 color: 'warmGray.50',
               }}>
-              Registracija,{signUpType}
+              Registracija
             </Heading>
           </View>
           <Center flex={1} justifyContent="space-between" w="100%">

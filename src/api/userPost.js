@@ -10,6 +10,7 @@ const userPost = (accountType, userr) => {
       authType: 'google',
       accountType,
       UID: userr.uid,
+      photoURL: userr.photo_url,
     };
     try {
       console.log('UID PROMISE=>', userr.uid);
@@ -17,7 +18,7 @@ const userPost = (accountType, userr) => {
       //console.log(response);
       resolve(response.data);
     } catch (error) {
-      console.log(error.response.data.errorMessage);
+      console.error(error.response.data.errorMessage);
       reject(error);
     }
   });

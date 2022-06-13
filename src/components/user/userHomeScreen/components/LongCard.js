@@ -1,4 +1,9 @@
-import {View, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Box, HStack, Text, Center, Icon, VStack} from 'native-base';
 import {LoadTestImage} from '../../../../assets/getImages';
@@ -15,10 +20,8 @@ const LongCard = ({buttonText}) => {
     fetchImg();
   }, []);
   return (
-    <TouchableOpacity
-      onPress={() => console.log('LongCard pressed')}
-      style={styles.LongCardView}>
-      <HStack flex={1} borderTopRadius={20}>
+    <TouchableWithoutFeedback onPress={() => console.log('LongCard pressed')}>
+      <HStack style={styles.LongCardView}>
         <Center alignContent="center" flex={0.4} backgroundColor="transparent">
           <Image
             alt="Naziv objekta"
@@ -52,13 +55,15 @@ const LongCard = ({buttonText}) => {
               </Text>
             </HStack>
           </Box>
-          <TouchableOpacity style={styles.longCard__Button}>
+          <TouchableWithoutFeedback>
+            <View style={styles.longCard__Button}>
+              <Text style={styles.longCard__ButtonText}>{buttonText}</Text>
+            </View>
             {/*S propsima iz tab navigatora slat tekst za btn=> rezerviraj ili provjeri ovisno o tabu(za history) */}
-            <Text style={styles.longCard__ButtonText}>{buttonText}</Text>
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
         </VStack>
       </HStack>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

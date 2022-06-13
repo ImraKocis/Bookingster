@@ -1,14 +1,14 @@
 import {
   View,
   Text,
-  KeyboardAvoidingView,
-  Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import CubeCard from './components/CubeCard';
-import {Heading, ScrollView} from 'native-base';
+import {Heading} from 'native-base';
 import SearchBar from './components/SearchBar';
 import {userHomeStyles} from './styles/userHomeStyles';
 import List from './components/List';
@@ -30,74 +30,93 @@ const UserHomeScreen = ({buttonText}) => {
     Keyboard.dismiss();
   };
   useEffect(() => {
-    // const getData = async () => {
-    //   const apiResponse = await fetch(
-    //     'https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages',
-    //   );
-    //   const data = await apiResponse.json();
-    //   setApiData(data);
-    // };
-    // getData();
+    const getData = async () => {
+      const apiResponse = await fetch(
+        'https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages',
+      );
+      const data = await apiResponse.json();
+      setApiData(data);
+    };
+    getData();
   }, []);
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <SafeAreaView style={styles.home__view}>
-        <ProfilePicture />
+    <SafeAreaView style={styles.home__view}>
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <>
+          <ProfilePicture />
 
-        <SearchBar
-          searchPhrase={searchPhrase}
-          setSearchPhrase={setSearchPhrase}
-          clicked={clicked}
-          setClicked={setClicked}
-        />
+          <SearchBar
+            searchPhrase={searchPhrase}
+            setSearchPhrase={setSearchPhrase}
+            clicked={clicked}
+            setClicked={setClicked}
+          />
+        </>
+      </TouchableWithoutFeedback>
+      <View style={{flex: 0.8}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{display: clicked ? 'none' : 'flex'}}>
+          <TouchableWithoutFeedback onPress={dismissKeyboard}>
+            <View style={{flex: 1}}>
+              <View style={styles.HeaderView}>
+                <Heading size={'md'} fontWeight={'500'}>
+                  Najpopularnija mjesta
+                </Heading>
+                <Heading size={'sm'} fontWeight={'400'}>
+                  Mjesta s najvise rezervacija
+                </Heading>
+              </View>
+              <View style={{marginVertical: 5, flex: 1}}>
+                <FlatList
+                  nestedScrollEnabled
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  data={apiData}
+                  renderItem={({item}) => <CubeCard />}
+                  keyExtractor={item => item.id}></FlatList>
+              </View>
 
-        <View style={{flex: 0.8, display: clicked ? 'none' : 'flex'}}>
-          <View style={styles.HeaderView}>
-            <Heading size={'md'} fontWeight={'500'}>
-              Najpopularnija mjesta
-            </Heading>
-            <Heading size={'sm'} fontWeight={'400'}>
-              Mjesta s najvise rezervacija
-            </Heading>
-          </View>
-          <View style={{flex: 1}}>
-            <LongCard buttonText={buttonText} />
-          </View>
-          <View style={styles.HeaderView}>
-            <Heading size={'md'} fontWeight={'500'}>
-              Najnovija mjesta
-            </Heading>
-            <Heading size={'sm'} fontWeight={'400'}>
-              Najnovije dodana mjesta
-            </Heading>
-          </View>
-          <View style={{flex: 1}}>
-            <LongCard buttonText={buttonText} />
-          </View>
-        </View>
-        <View
-          style={{
-            flex: 0.8,
-            zIndex: 99,
-            alignSelf: 'center',
-            alignContent: 'center',
-            justifyContent: 'center',
-            display: clicked ? 'flex' : 'none',
-          }}>
-          <Text>Upisite naziv ili adresu zeljenog mjesta</Text>
-        </View>
+              <View style={styles.HeaderView}>
+                <Heading size={'md'} fontWeight={'500'}>
+                  Najnovija mjesta
+                </Heading>
+                <Heading size={'sm'} fontWeight={'400'}>
+                  Najnovije dodana mjesta
+                </Heading>
+              </View>
+              <View style={{flex: 1}}>
+                <LongCard buttonText={buttonText} />
+              </View>
+            </View>
 
-        {/* {!apiData ? (
+            {/* {!apiData ? (
           <ActivityIndicator color={primary} style={{flex: 0.8}} size="large" />
-        ) : (
-          <List
+          ) : (
+            <List
             searchPhrase={searchPhrase}
             data={apiData}
             setClicked={setClicked}
-          />
-        )} */}
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+            />
+          )} */}
+          </TouchableWithoutFeedback>
+        </ScrollView>
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+          <View
+            style={{
+              flex: 1,
+              height: '100%',
+              zIndex: 99,
+              alignSelf: 'center',
+              alignContent: 'center',
+              justifyContent: 'center',
+              display: clicked ? 'flex' : 'none',
+            }}>
+            <Text>Upisite naziv ili adresu zeljenog mjesta</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </SafeAreaView>
   );
 };
 
