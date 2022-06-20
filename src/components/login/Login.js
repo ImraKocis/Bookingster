@@ -35,15 +35,11 @@ import {
   updateUserInfo,
   selectUser,
 } from '../../redux/features/userSlice';
+import userGet from '../../api/userGet';
 
 const styles = loginStyle;
 
-export default function Login({
-  onAuthStateChanged,
-  initializing,
-  setUserInfo,
-  setIsNewUser,
-}) {
+export default function Login({setUserInfo, setIsNewUser}) {
   const google_key = useSelector(selectorGoogle);
   //const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -64,8 +60,11 @@ export default function Login({
     if (email && password) {
       auth()
         .signInWithEmailAndPassword(email, password)
-        .then(() => {
+        .then(userCredentials => {
           console.log('Logiran');
+          userGet(userCredentials.user).then(response => {
+            setUserInfo(response.user);
+          });
         })
         .catch(error => {
           if (error.code === 'auth/invalid-email')
@@ -88,12 +87,24 @@ export default function Login({
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
       setIsNewUser(credential.additionalUserInfo.isNewUser);
-      dispatch(
-        updateUserInfo({
-          accountType: null,
-          isNewUser: credential.additionalUserInfo.isNewUser,
-        }),
-      );
+      if (credential.additionalUserInfo.isNewUser) {
+        console.log('peroperic');
+        dispatch(
+          updateUserInfo({
+            accountType: null, // uvijek ce setat accountType na null, kad se logira s googleom
+            isNewUser: credential.additionalUserInfo.isNewUser,
+            photoURL: credential.user.photoURL,
+            displayName: credential.user.displayName,
+            uid: credential.user.uid,
+          }),
+        );
+      } else {
+        console.log('LOGIN UID:', credential.user);
+        userGet(credential.user).then(response => {
+          console.log('GET_USER_INFO_API', response.user);
+          setUserInfo(response.user);
+        });
+      }
     });
     return credentials;
   };
@@ -101,12 +112,8 @@ export default function Login({
   useEffect(() => {
     GetUrls();
     dispatch(fetchGoogleKey());
-
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-
-    return subscriber;
   }, []);
-  if (initializing) return null;
+
   return (
     <SafeAreaView style={styles.mainView}>
       <>

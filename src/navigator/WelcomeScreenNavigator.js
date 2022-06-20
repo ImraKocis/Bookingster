@@ -7,11 +7,7 @@ import ChoiceScreenNavigator from './ChoiceScreenNavigator';
 
 const Stack = createStackNavigator();
 
-const WelcomeScreenNavigator = ({
-  onAuthStateChanged,
-  initializing,
-  setUserInfo,
-}) => {
+const WelcomeScreenNavigator = ({setUserInfo, setIsNewUser}) => {
   // const [set]
   return (
     <Stack.Navigator initialRouteName="Welcome">
@@ -25,19 +21,12 @@ const WelcomeScreenNavigator = ({
             {...props}
             setIsNewUser={setIsNewUser}
             setUserInfo={setUserInfo}
-            onAuthStateChanged={onAuthStateChanged}
-            initializing={initializing}
           />
         )}
       </Stack.Screen>
       <Stack.Screen options={{headerShown: false}} name="Choice_navigator">
         {props => (
-          <ChoiceScreenNavigator
-            {...props}
-            setUserInfo={setUserInfo}
-            onAuthStateChanged={onAuthStateChanged}
-            initializing={initializing}
-          />
+          <ChoiceScreenNavigator {...props} setUserInfo={setUserInfo} />
         )}
       </Stack.Screen>
     </Stack.Navigator>

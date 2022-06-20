@@ -9,7 +9,7 @@ import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import CustomStepIndicator from '../stepIndicator/CustomStepIndicator';
 import Footer from '../../Footer';
 
-const Hint = ({currentPosition, ViewPager}) => {
+const Hint = ({currentPosition, handleRightArrowPress}) => {
   const [image, setImage] = useState('https://i.imgur.com/wY7xQZU.png');
   //const [position, setPosition] = useState(currentPosition);
   const getImage = async () => {
@@ -21,15 +21,15 @@ const Hint = ({currentPosition, ViewPager}) => {
   useEffect(() => {
     console.log('Hola Amigo'); //save u redux, u ovome ne treba
   }, [currentPosition]);
-  const handleArrowPress = () => {
-    ViewPager.current.setPage(currentPosition + 1);
-    // console.log('pressed');
-    // navigation.navigate('Osobni_podaci');
-    //setPosition(position + 1);
-  };
+  // const handleArrowPress = () => {
+  //   ViewPager.current.setPage(currentPosition + 1);
+  //   // console.log('pressed');
+  //   // navigation.navigate('Osobni_podaci');
+  //   //setPosition(position + 1);
+  // };
   return (
     <Box
-      borderTopRadius={20}
+      borderTopRadius={50}
       marginTop={5}
       elevation={20}
       flex={1}
@@ -55,7 +55,9 @@ const Hint = ({currentPosition, ViewPager}) => {
         </Box>
         <Box flex={0.2}>
           <HStack marginX={'5%'} justifyContent={'flex-end'}>
-            <TouchableOpacity onPress={handleArrowPress} style={{padding: 5}}>
+            <TouchableOpacity
+              onPress={handleRightArrowPress}
+              style={{padding: 5}}>
               <VectorIcon size={25} color={'black'} name="arrow-right" />
             </TouchableOpacity>
           </HStack>

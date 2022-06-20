@@ -21,12 +21,12 @@
     "@react-navigation/stack": "^6.2.1",
     "@reduxjs/toolkit": "^1.8.1",
     "axios": "^0.27.2",
+    "formik": "^2.2.9",
     "native-base": "^3.4.5",
     "react": "17.0.2",
     "react-hook-form": "^7.30.0",
     "react-native": "0.68.1",
     "react-native-dotenv": "^3.3.1",
-    "react-native-form-validator": "^0.5.1",
     "react-native-gesture-handler": "^2.4.2",
     "react-native-pager-view": "^5.4.24",
     "react-native-paper": "^4.12.1",
@@ -37,7 +37,8 @@
     "react-native-svg": "^12.3.0",
     "react-native-vector-icons": "^9.1.0",
     "react-redux": "^8.0.2",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -127,7 +127,7 @@ export const userHomeStyles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-  profile__image: {width: 50, height: 50},
+  profile__image: {width: 50, height: 50, borderRadius: 30},
   HeaderView: {
     flex: 1,
 

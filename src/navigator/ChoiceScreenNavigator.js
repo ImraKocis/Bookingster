@@ -5,12 +5,7 @@ import SignUp from '../components/signup/SignUp';
 
 const Stack = createStackNavigator();
 
-const ChoiceScreenNavigator = ({
-  onAuthStateChanged,
-  initializing,
-  setUserInfo,
-  isNewUser,
-}) => {
+const ChoiceScreenNavigator = ({setUserInfo, isNewUser, setIsLoggingIn}) => {
   return (
     <Stack.Navigator initialRouteName="Choice">
       <Stack.Screen options={{headerShown: false}} name="Choice">
@@ -23,8 +18,7 @@ const ChoiceScreenNavigator = ({
           <SignUp
             {...props}
             setUserInfo={setUserInfo}
-            onAuthStateChanged={onAuthStateChanged}
-            initializing={initializing}
+            setIsLoggingIn={setIsLoggingIn}
             signUpType={'1'}
           />
         )}
@@ -34,8 +28,7 @@ const ChoiceScreenNavigator = ({
           <SignUp
             {...props}
             setUserInfo={setUserInfo}
-            onAuthStateChanged={onAuthStateChanged}
-            initializing={initializing}
+            setIsLoggingIn={setIsLoggingIn}
             signUpType={'0'}
           />
         )}

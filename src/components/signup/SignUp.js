@@ -35,14 +35,10 @@ import {
   selectUser,
 } from '../../redux/features/userSlice';
 import userPost from '../../api/userPost';
+import userGet from '../../api/userGet';
 const styles = signupStyle;
 
-const SignUp = ({
-  signUpType,
-  onAuthStateChanged,
-  initializing,
-  setUserInfo,
-}) => {
+const SignUp = ({signUpType, setUserInfo}) => {
   const google_key = useSelector(selectorGoogle);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -58,29 +54,35 @@ const SignUp = ({
   const [userFB, setUserFB] = useState(null);
 
   const saveUserToFirebase = () => {
-    console.log('SIGNUPTYPE =>', signUpType);
-    // dispatch(
-    //   login({
-    //     name:
-    //       userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
-    //     email: userFB.email,
-    //     photo_url: userFB.photo_url == null ? null : userFB.photo_url,
-    //     uid: userFB.uid,
-    //     accountType: signUpType,
-    //     isNewUser: true,
-    //   }),
-    // );
-
-    userPost(signUpType, {
-      name:
-        userFB.displayName == null ? ime + ' ' + prezime : userFB.displayName,
-      email: userFB.email,
-      photo_url: userFB.photo_url == null ? null : userFB.photo_url,
-      uid: userFB.uid,
-    }).then(response => {
-      setUserInfo(response.user);
-      console.log('API RESPONSE =>', response.user);
-    });
+    // console.log('USERFB =>', userFB.authType);
+    // console.log('USER IF SAVE TO FIREBASE', user);
+    if (
+      (userFB.isNewUser && userFB.authType == 'google') ||
+      userFB.authType == 'emailpassword'
+    ) {
+      userPost({
+        name: userFB.authType == 'google' ? userFB.displayName : ime,
+        lastname: userFB.authType == 'google' ? null : prezime,
+        authType: userFB.authType,
+        photoURL:
+          userFB.photoURL == null
+            ? `https://ui-avatars.com/api/?name=${ime}+${prezime}&background=random&rounded=true`
+            : userFB.photoURL,
+        accountType: signUpType,
+        UID: userFB.uid,
+      }).then(response => {
+        setUserInfo(response.user);
+        console.log('API RESPONSE =>', response.user);
+      });
+    } else {
+      userGet({uid: userFB.uid})
+        .then(response => {
+          setUserInfo(response.user);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   };
 
   const GetUrls = async () => {
@@ -100,11 +102,16 @@ const SignUp = ({
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(userCredentials => {
-          //console.log('USER => ', userFirebase);
-          setUserFB(userCredentials.user);
+          console.log('USER SIGN IN=> ', userCredentials.user);
+
+          setUserFB({
+            uid: userCredentials.user.uid,
+            displayName: userCredentials.user.displayName,
+            photoURL: userCredentials.user.photoURL,
+            authType: 'emailpassword',
+          });
           setSignUpSuccess(true);
           console.log('User account created & signed in!');
-          //console.log(ime, prezime);
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -128,16 +135,16 @@ const SignUp = ({
 
     const credentials = auth().signInWithCredential(googleCredential);
     credentials.then(credential => {
-      setUserFB(credential.user);
+      setUserFB({
+        uid: credential.user.uid,
+        displayName: credential.user.displayName,
+        photoURL: credential.user.photoURL,
+        authType: 'google',
+        isNewUser: credential.additionalUserInfo.isNewUser,
+      });
 
       setSignUpSuccess(true);
       //saveUserToFirebase();
-      dispatch(
-        updateUserInfo({
-          isNewUser: credential.additionalUserInfo.isNewUser,
-          accountType: signUpType,
-        }),
-      );
     });
 
     return credentials;
@@ -150,9 +157,6 @@ const SignUp = ({
   useEffect(() => {
     dispatch(fetchGoogleKey());
     GetUrls();
-
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
   }, []);
 
   useEffect(() => {
@@ -161,7 +165,7 @@ const SignUp = ({
       saveUserToFirebase();
     }
   }, [userFB]);
-  if (initializing) return null;
+
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.imageContainer}>

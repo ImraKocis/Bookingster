@@ -5,27 +5,45 @@ import {LoadChoiceImg} from '../../assets/getImages';
 import {choiceStyle} from './choiceStyle';
 import userPost from '../../api/userPost';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectUser, updateUserInfo} from '../../redux/features/userSlice';
+import {
+  logout,
+  selectUser,
+  updateUserInfo,
+} from '../../redux/features/userSlice';
+import auth from '@react-native-firebase/auth';
 const styles = choiceStyle;
 
 export default function Choice({navigation, isNewUser, setUserInfo}) {
   const [choiceImg, setChoiceImg] = useState();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
+  const LogoutUser = () => {
+    dispatch(logout());
+    auth().signOut();
+  };
   const GetUrls = async () => {
     setChoiceImg(await LoadChoiceImg());
   };
   const saveUserToFirebase = signUpType => {
-    console.log('signUpType', signUpType);
-    dispatch(updateUserInfo({accountType: signUpType}));
-    userPost(signUpType, {
+    //console.log('signUpType', signUpType);
+    //dispatch(updateUserInfo({accountType: signUpType}));
+    //console.log('USEREEEEEE:', user);
+    const splitName = user.displayName.split(' ');
+    const {0: fN, 1: lN} = splitName;
+    console.log('PHOTO_URL', user.photoURL);
+    userPost({
       name: user.displayName,
-      email: user.email,
-      //photoUrl: user.photoUrl == null ? null : user.photoUrl,
-      uid: user.uid,
+      lastname: null,
+      authType: 'google',
+      photoURL:
+        user.photoURL == null
+          ? `https://ui-avatars.com/api/?name=${fN}+${lN}&background=random&rounded=true`
+          : user.photoURL,
+      accountType: signUpType,
+      UID: user.uid,
     }).then(response => {
       setUserInfo(response.user);
-      //console.log('API RESPONSE =>', response.user);
+      console.log('API RESPONSE =>', response.user);
     });
   };
   useEffect(() => {
@@ -56,7 +74,7 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
           <HStack marginY={7}>
             <Center>
               {/*navigacija na novi racun te ugostitelj hint, itd. */}
-              {console.log('isNewUser', isNewUser)}
+
               <TouchableOpacity
                 style={styles.button}
                 onPress={() =>
@@ -79,6 +97,14 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
                     : navigation.navigate('Novi_racun_korisnik')
                 }>
                 <Text style={styles.buttonText}>Korisnik</Text>
+              </TouchableOpacity>
+            </Center>
+          </HStack>
+          <HStack>
+            <Center>
+              {/*navigacija na novi reacun te prijavu */}
+              <TouchableOpacity style={styles.button} onPress={LogoutUser}>
+                <Text style={styles.buttonText}>Odjava</Text>
               </TouchableOpacity>
             </Center>
           </HStack>

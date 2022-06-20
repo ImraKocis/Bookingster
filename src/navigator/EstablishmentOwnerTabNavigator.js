@@ -1,11 +1,14 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-
 import React from 'react';
 import auth from '@react-native-firebase/auth';
 import {loginStyle} from '../components/login/loginStyle';
+import {logout} from '../redux/features/userSlice';
+import {useDispatch} from 'react-redux';
 const styles = loginStyle;
 const EstablishmentOwnerTabNavigator = () => {
+  const dispatch = useDispatch();
   const LogoutUser = () => {
+    dispatch(logout());
     auth().signOut();
   };
   return (
