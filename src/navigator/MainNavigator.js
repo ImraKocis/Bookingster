@@ -27,7 +27,7 @@ const MainNavigator = () => {
   const [isNewUser, setIsNewUser] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const onAuthStateChanged = user_firebase => {
+  const onIdTokenChanged = user_firebase => {
     console.log('User signed in: ', user_firebase);
     if (!user && user_firebase) {
       console.log('if main nav get: ', user_firebase.uid);
@@ -41,7 +41,7 @@ const MainNavigator = () => {
     }
     if (user_firebase) {
       auth()
-        .currentUser.getIdToken(/* forceRefresh */ false)
+        .currentUser.getIdToken(/* forceRefresh */ true)
         .then(function (idToken) {
           console.log('USER MAIN =>', user);
 
@@ -55,7 +55,7 @@ const MainNavigator = () => {
     if (initializing) setInitializing(false);
   };
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = auth().onIdTokenChanged(onIdTokenChanged);
 
     return subscriber; // unsubscribe on unmount
   }, [initializing]);

@@ -149,7 +149,7 @@ const OsnovniPodaci = ({
                 style={{padding: 5}}>
                 <VectorIcon size={25} color={'black'} name="arrow-left" />
               </TouchableOpacity>
-              {console.log('isValid = ', isValid)}
+
               <TouchableOpacity
                 disabled={!isValid}
                 onPress={handleRightArrowPress}

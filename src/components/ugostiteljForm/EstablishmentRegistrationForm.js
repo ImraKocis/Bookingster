@@ -7,6 +7,7 @@ import CustomStepIndicator from './stepIndicator/CustomStepIndicator';
 import {Box, Input, KeyboardAvoidingView} from 'native-base';
 import Hint from './hint/Hint';
 import OsnovniPodaci from './osnovniPodaci/OsnovniPodaci';
+//import RadnoVrijemeOld from './radnoVrijeme/RadnoVrijemeOld';
 import RadnoVrijeme from './radnoVrijeme/RadnoVrijeme';
 
 const EstablishmentRegistrationForm = () => {
