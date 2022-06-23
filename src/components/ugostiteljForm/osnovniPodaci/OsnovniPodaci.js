@@ -23,7 +23,7 @@ const OsnovniPodaci = ({
   currentPosition,
 }) => {
   useEffect(() => {
-    console.log('Hola Amigo'); //save u redux, u ovome ne treba
+    console.log('Hola Amigo');
   }, [currentPosition]);
 
   return (

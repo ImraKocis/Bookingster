@@ -9,6 +9,8 @@ import Hint from './hint/Hint';
 import OsnovniPodaci from './osnovniPodaci/OsnovniPodaci';
 //import RadnoVrijemeOld from './radnoVrijeme/RadnoVrijemeOld';
 import RadnoVrijeme from './radnoVrijeme/RadnoVrijeme';
+import DodajSliku from './dodajSliku/DodajSliku';
+import Stolovi from './stolovi/Stolovi';
 
 const EstablishmentRegistrationForm = () => {
   const [oib, setOib] = useState('');
@@ -31,7 +33,10 @@ const EstablishmentRegistrationForm = () => {
   return (
     <Box flex={1} backgroundColor={backgroundColor}>
       <Box flex={0.2} marginTop={5} justifyContent={'center'}>
-        <CustomStepIndicator currentPosition={currentPosition} />
+        <CustomStepIndicator
+          PagerView={ref}
+          currentPosition={currentPosition}
+        />
       </Box>
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
@@ -62,6 +67,20 @@ const EstablishmentRegistrationForm = () => {
           </View>
           <View key="3">
             <RadnoVrijeme
+              handleRightArrowPress={handleRightArrowPress}
+              handleLeftArrowPress={handleLeftArrowPress}
+              currentPosition={currentPosition}
+            />
+          </View>
+          <View key="4">
+            <DodajSliku
+              handleRightArrowPress={handleRightArrowPress}
+              handleLeftArrowPress={handleLeftArrowPress}
+              currentPosition={currentPosition}
+            />
+          </View>
+          <View key="5">
+            <Stolovi
               handleRightArrowPress={handleRightArrowPress}
               handleLeftArrowPress={handleLeftArrowPress}
               currentPosition={currentPosition}
