@@ -19,7 +19,7 @@ const CustomStepIndicator = ({currentPosition, PagerView}) => {
     <StepIndicator
       stepCount={5}
       customStyles={customStyles}
-      currentPosition={step}
+      currentPosition={currentPosition}
       onPress={val => setStep(val)}
       labels={labels}
     />

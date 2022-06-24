@@ -39,7 +39,7 @@ const days = [
 const RadnoVrijeme = ({
   handleRightArrowPress,
   handleLeftArrowPress,
-  currentPosition,
+  setScreenThree,
 }) => {
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
@@ -52,6 +52,7 @@ const RadnoVrijeme = ({
   // });
 
   const [selectedDays, setSelectedDays] = useState([]);
+  const [selectedDaysApi, setSelectedDaysApi] = useState([]);
 
   const onChange = (selectedTime, dateType) => {
     const time = selectedTime;
@@ -106,8 +107,30 @@ const RadnoVrijeme = ({
           daySelected: true,
         },
       ];
+      const arrForApi = [
+        ...selectedDaysApi,
+        {
+          day,
+          timeFrom: (
+            (tFrom.getHours() < 10 ? '0' : '') +
+            tFrom.getHours() +
+            ':' +
+            (tFrom.getMinutes() < 10 ? '0' : '') +
+            tFrom.getMinutes()
+          ).toString(),
+          timeTo: (
+            (tTo.getHours() < 10 ? '0' : '') +
+            tTo.getHours() +
+            ':' +
+            (tTo.getMinutes() < 10 ? '0' : '') +
+            tTo.getMinutes()
+          ).toString(),
+        },
+      ];
       sortedDays.sort((a, b) => (a.index > b.index ? 1 : -1));
       setSelectedDays(sortedDays);
+      setSelectedDaysApi(arrForApi);
+      setScreenThree(arrForApi);
     } else {
       setSelectedDays(selectedDays.filter(item => item.day !== day));
     }

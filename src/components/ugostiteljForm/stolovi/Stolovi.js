@@ -1,31 +1,39 @@
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {Box, HStack, VStack, Text, Input, Divider} from 'native-base';
+import {
+  Box,
+  HStack,
+  VStack,
+  Text,
+  Input,
+  Divider,
+  Select,
+  CheckIcon,
+  Center,
+} from 'native-base';
 import {useState} from 'react';
+import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
+
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {useEffect} from 'react';
+import Footer from '../../Footer';
+import {primary} from '../../../assets/getColors';
 
 const validationSchema = yup.object().shape({
-  minChairs: yup
-    .number()
-    .min(2, 'Minimalan broj stolica je 2')
-    .max(15, 'Maksimalan broj stolica je 15'),
-  maxChairs: yup
-    .number()
-    .min(2, 'Minimalan broj stolica je 2')
-    .max(15, 'Maksimalan broj stolica je 15'),
-  numOfTables: yup
-    .number('Molimo upisujte samo brojeve')
-    .min(2, 'Minimalan broj stolova je 2')
-    .max(99, 'Maksimalan broj stolova je 99'),
+  numOfTables: yup.string().matches('\\d+', 'Unos je dopušten samo za brojeve'),
 });
 
-const runCallback = cb => {
-  return cb();
-};
-
-const Stolovi = ({}) => {
+const Stolovi = ({handleRightArrowPress, handleLeftArrowPress}) => {
   const [selectable, setSelectable] = useState(null);
+  const [numOfSelected, setNumOfSelected] = useState({numOfSelected: 0});
+  const [tablesChairs, setTablesChairs] = useState({
+    two: 0,
+    three: 0,
+    four: 0,
+    five: 0,
+    sixAndMore: 0,
+  });
   const [tables, setTables] = useState([
     {
       index: 'br stola',
@@ -33,20 +41,57 @@ const Stolovi = ({}) => {
     },
   ]);
   const handleTableChange = val => {
-    console.log(val);
+    //console.log(val);
     let arr = [];
     if (val >= 2 && val <= 99) {
       for (let i = 1; i <= val; i++) {
         arr.push({index: i, numOfSelectableChairs: i});
       }
-      console.log(arr);
+      //console.log(arr);
       setSelectable(arr);
     }
   };
 
+  const handleSelectChange = (key, value) => {
+    //console.log(key);
+    setTablesChairs({...tablesChairs, [key]: value});
+  };
+  console.log(tablesChairs);
+  useEffect(() => {
+    setNumOfSelected({
+      numOfSelected: Object.values(tablesChairs).reduce((a, b) => a + b),
+    });
+    //console.log(numOfSelected);
+  }, [tablesChairs]);
+
+  const SelectRow = ({selectedVal, objectKey, heading}) => (
+    <HStack mx={2} alignItems={'center'} flex={1}>
+      <Text flex={0.6} mx={2}>
+        {heading}
+      </Text>
+      <Select
+        minHeight={30}
+        flex={0.4}
+        mx={2}
+        minWidth={100}
+        //placeholder="Broj"
+        mt={1}
+        onValueChange={itemValue => handleSelectChange(objectKey, itemValue)}
+        selectedValue={selectedVal.toString()}>
+        {selectable.map((item, index) => (
+          <Select.Item
+            key={index}
+            label={item.numOfSelectableChairs.toString()}
+            value={item.index}
+          />
+        ))}
+      </Select>
+    </HStack>
+  );
+
   return (
     <Formik
-      initialValues={{minChairs: 0, maxChairs: 0}}
+      initialValues={{numOfTables: 0}}
       onSubmit={values => console.log(values)}
       validateOnMount={true}
       validationSchema={validationSchema}>
@@ -57,13 +102,14 @@ const Stolovi = ({}) => {
           elevation={20}
           flex={1}
           backgroundColor={'white'}>
-          <VStack flex={0.25}>
+          <VStack flex={0.2}>
             <HStack
               alignItems={'center'}
               justifyContent={'space-around'}
               flex={1}>
               <Text fontSize={'md'}>Upišite broj stolova u lokalu</Text>
               <Input
+                keyboardType="numeric"
                 onChangeText={text => {
                   handleChange('numOfTables');
                   handleTableChange(text);
@@ -91,9 +137,81 @@ const Stolovi = ({}) => {
             )}
             <Divider width={'70%'} my={3} thickness={2} />
           </VStack>
-          <VStack flex={0.6} backgroundColor={'amber.100'}>
-            {selectable && <Text>Pero</Text>}
+          <VStack flex={0.6} alignItems={'center'} justifyContent={'center'}>
+            {selectable && (
+              <>
+                <SelectRow
+                  selectedVal={tablesChairs.two.toString()}
+                  heading={'Broj stolova s dvije stolice'}
+                  objectKey={'two'}
+                />
+
+                <SelectRow
+                  selectedVal={tablesChairs.three.toString()}
+                  heading={'Broj stolova s tri stolice'}
+                  objectKey={'three'}
+                />
+
+                <SelectRow
+                  selectedVal={tablesChairs.four.toString()}
+                  heading={'Broj stolova s četiri stolice'}
+                  objectKey={'four'}
+                />
+
+                <SelectRow
+                  selectedVal={tablesChairs.five.toString()}
+                  heading={'Broj stolova s pet stolica'}
+                  objectKey={'five'}
+                />
+
+                <SelectRow
+                  selectedVal={tablesChairs.sixAndMore.toString()}
+                  heading={'Broj stolova s šet ili više stolica'}
+                  objectKey={'sixAndMore'}
+                />
+              </>
+            )}
           </VStack>
+          <HStack
+            width="100%"
+            position="absolute"
+            //alignItems="center"
+            bottom={8}
+            flex={0.2}
+            justifyContent={'center'}>
+            <TouchableOpacity
+              onPress={handleLeftArrowPress}
+              style={{
+                flex: 1,
+                padding: 5,
+                alignSelf: 'flex-start',
+              }}>
+              <VectorIcon size={25} color={'black'} name="arrow-left" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              //disabled={!isValid}
+
+              onPress={handleRightArrowPress}
+              style={{
+                flex: 1,
+                maxWidth: '30%',
+                minHeight: '100%',
+                padding: 5,
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'flex-start',
+                marginRight: 25,
+                borderRadius: 10,
+
+                backgroundColor: primary,
+              }}>
+              <Text color={'white'} fontWeight={'bold'} fontSize={'md'}>
+                Potvrdi
+              </Text>
+            </TouchableOpacity>
+          </HStack>
+          <Footer />
         </Box>
       )}
     </Formik>
