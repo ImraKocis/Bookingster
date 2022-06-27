@@ -1,11 +1,11 @@
-import {View, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Box, Text, Heading, HStack, Input, VStack} from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { Box, Text, Heading, HStack, Input, VStack } from 'native-base';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as yup from 'yup';
+import PropTypes from 'prop-types';
 import Footer from '../../Footer';
-import {useRef} from 'react';
 
 const phoneRegExp =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
@@ -21,11 +21,7 @@ const validationSchema = yup.object().shape({
   telefon: yup.string().matches(phoneRegExp, 'Broj telefona je nevažeći'),
 });
 
-const OsnovniPodaci = ({
-  handleRightArrowPress,
-  handleLeftArrowPress,
-  setScreenTwo,
-}) => {
+function OsnovniPodaci({ handleRightArrowPress, handleLeftArrowPress, setScreenTwo }) {
   const formRef = useRef();
   const [oib, setOib] = useState();
   const [naziv, setNaziv] = useState();
@@ -33,9 +29,11 @@ const OsnovniPodaci = ({
   const [adresa, setAdresa] = useState();
   const [drzava, setDrzava] = useState();
   const [telefon, setTelefon] = useState();
-  //console.log('useRef', formRef);
+
+  // console.log('useRef', formRef);
+
   useEffect(() => {
-    //console.log('Formik Values =====>', formRef.current.values);
+    // console.log('Formik Values =====>', formRef.current.values);
 
     setScreenTwo({
       location: {
@@ -44,9 +42,10 @@ const OsnovniPodaci = ({
         country: drzava,
       },
       name: naziv,
-      oib: oib,
+      oib,
       phoneNumber: telefon,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oib, naziv, adresa, drzava, mjesto, telefon]);
 
   return (
@@ -60,15 +59,11 @@ const OsnovniPodaci = ({
         telefon: '',
       }}
       innerRef={formRef}
-      validateOnMount={true}
-      validationSchema={validationSchema}>
-      {({handleChange, handleBlur, values, touched, errors, isValid}) => (
-        <Box
-          borderTopRadius={50}
-          marginTop={5}
-          elevation={20}
-          flex={1}
-          backgroundColor={'white'}>
+      validateOnMount
+      validationSchema={validationSchema}
+    >
+      {({ handleChange, handleBlur, values, touched, errors, isValid }) => (
+        <Box borderTopRadius={50} marginTop={5} elevation={20} flex={1} backgroundColor="white">
           <VStack flex={1}>
             <Input
               onChangeText={handleChange('oib')}
@@ -78,14 +73,14 @@ const OsnovniPodaci = ({
               variant="underlined"
               fontSize={15}
               alignSelf="center"
-              width={'80%'}
+              width="80%"
               color="black"
               maxLength={11}
             />
 
             {touched.oib && errors.oib ? (
-              <Box width={'80%'} alignSelf={'center'} alignItems={'flex-start'}>
-                <Text color={'red.500'}>{errors.oib}</Text>
+              <Box width="80%" alignSelf="center" alignItems="flex-start">
+                <Text color="red.500">{errors.oib}</Text>
               </Box>
             ) : (
               setOib(values.oib)
@@ -98,12 +93,12 @@ const OsnovniPodaci = ({
               variant="underlined"
               fontSize={15}
               alignSelf="center"
-              width={'80%'}
+              width="80%"
               color="black"
             />
             {touched.naziv && errors.naziv ? (
-              <Box width={'80%'} alignSelf={'center'} alignItems={'flex-start'}>
-                <Text color={'red.500'}>{errors.naziv}</Text>
+              <Box width="80%" alignSelf="center" alignItems="flex-start">
+                <Text color="red.500">{errors.naziv}</Text>
               </Box>
             ) : (
               setNaziv(values.naziv)
@@ -116,21 +111,17 @@ const OsnovniPodaci = ({
               variant="underlined"
               fontSize={15}
               alignSelf="center"
-              width={'80%'}
+              width="80%"
               color="black"
             />
             {touched.telefon && errors.telefon ? (
-              <Box width={'80%'} alignSelf={'center'} alignItems={'flex-start'}>
-                <Text color={'red.500'}>{errors.telefon}</Text>
+              <Box width="80%" alignSelf="center" alignItems="flex-start">
+                <Text color="red.500">{errors.telefon}</Text>
               </Box>
             ) : (
               setTelefon(values.telefon)
             )}
-            <Heading
-              margin={'5%'}
-              marginTop={'10%'}
-              size={'lg'}
-              fontWeight={'bold'}>
+            <Heading margin="5%" marginTop="10%" size="lg" fontWeight="bold">
               Lokacija
             </Heading>
             <VStack flex={0.8}>
@@ -142,15 +133,12 @@ const OsnovniPodaci = ({
                 variant="underlined"
                 fontSize={15}
                 alignSelf="center"
-                width={'70%'}
+                width="70%"
                 color="black"
               />
               {touched.drzava && errors.drzava ? (
-                <Box
-                  width={'70%'}
-                  alignSelf={'center'}
-                  alignItems={'flex-start'}>
-                  <Text color={'red.500'}>{errors.drzava}</Text>
+                <Box width="70%" alignSelf="center" alignItems="flex-start">
+                  <Text color="red.500">{errors.drzava}</Text>
                 </Box>
               ) : (
                 setDrzava(values.drzava)
@@ -163,16 +151,13 @@ const OsnovniPodaci = ({
                 variant="underlined"
                 fontSize={15}
                 alignSelf="center"
-                width={'70%'}
+                width="70%"
                 color="black"
               />
 
               {touched.mjesto && errors.mjesto ? (
-                <Box
-                  width={'70%'}
-                  alignSelf={'center'}
-                  alignItems={'flex-start'}>
-                  <Text color={'red.500'}>{errors.mjesto}</Text>
+                <Box width="70%" alignSelf="center" alignItems="flex-start">
+                  <Text color="red.500">{errors.mjesto}</Text>
                 </Box>
               ) : (
                 setMjesto(values.mjesto)
@@ -185,37 +170,29 @@ const OsnovniPodaci = ({
                 variant="underlined"
                 fontSize={15}
                 alignSelf="center"
-                width={'70%'}
+                width="70%"
                 color="black"
               />
               {touched.adresa && errors.adresa ? (
-                <Box
-                  width={'70%'}
-                  alignSelf={'center'}
-                  alignItems={'flex-start'}>
-                  <Text color={'red.500'}>{errors.adresa}</Text>
+                <Box width="70%" alignSelf="center" alignItems="flex-start">
+                  <Text color="red.500">{errors.adresa}</Text>
                 </Box>
               ) : (
                 setAdresa(values.adresa)
               )}
             </VStack>
 
-            <HStack flex={0.2} justifyContent={'space-between'}>
-              <TouchableOpacity
-                onPress={handleLeftArrowPress}
-                style={{padding: 5}}>
-                <VectorIcon size={25} color={'black'} name="arrow-left" />
+            <HStack flex={0.2} justifyContent="space-between">
+              <TouchableOpacity onPress={handleLeftArrowPress} style={{ padding: 5 }}>
+                <VectorIcon size={25} color="black" name="arrow-left" />
               </TouchableOpacity>
 
               <TouchableOpacity
                 disabled={!isValid}
                 onPress={handleRightArrowPress}
-                style={{padding: 5}}>
-                <VectorIcon
-                  size={25}
-                  color={isValid ? 'black' : 'gray'}
-                  name="arrow-right"
-                />
+                style={{ padding: 5 }}
+              >
+                <VectorIcon size={25} color={isValid ? 'black' : 'gray'} name="arrow-right" />
               </TouchableOpacity>
             </HStack>
             <Footer />
@@ -224,6 +201,12 @@ const OsnovniPodaci = ({
       )}
     </Formik>
   );
+}
+
+OsnovniPodaci.propTypes = {
+  handleLeftArrowPress: PropTypes.func.isRequired,
+  handleRightArrowPress: PropTypes.func.isRequired,
+  setScreenTwo: PropTypes.func.isRequired,
 };
 
 export default OsnovniPodaci;

@@ -1,111 +1,85 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import auth from '@react-native-firebase/auth';
-import {NavigationContainer} from '@react-navigation/native';
-
-import LoggedInNavigator from './LogedInNavigator';
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  selectUser,
-  login,
-  logout,
-  updateUserInfo,
-} from '../redux/features/userSlice';
-import EstablishmentRegistrationNavigator from './EstablishmentRegistrationNavigator';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUser, login, updateUserInfo } from '../redux/features/userSlice';
 import UserTabNavigator from './UserTabNavigator';
 import EstablishmentOwnerTabNavigator from './EstablishmentOwnerTabNavigator';
 import ChoiceScreenNavigator from './ChoiceScreenNavigator';
 import WelcomeScreenNavigator from './WelcomeScreenNavigator';
+import AppContext from './AppContext';
 import userGet from '../api/userGet';
-import {Center, NativeBaseProvider, Spinner} from 'native-base';
-import {primary} from '../assets/getColors';
+import EstablishmentRegistrationForm from '../components/ugostiteljForm/EstablishmentRegistrationForm';
 
-const MainNavigator = () => {
+function MainNavigator() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [initializing, setInitializing] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [isNewUser, setIsNewUser] = useState(false);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const contextValue = useMemo(
+    () => ({
+      isNewUser,
+      setUserInfo,
+      setIsNewUser,
+    }),
+    [isNewUser, setUserInfo, setIsNewUser]
+  );
 
-  const onIdTokenChanged = user_firebase => {
-    console.log('User signed in: ', user_firebase);
-    if (!user && user_firebase) {
-      console.log('if main nav get: ', user_firebase.uid);
-      userGet({uid: user_firebase.uid})
-        .then(response => {
-          setUserInfo(response.user);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-    if (user_firebase) {
-      auth()
-        .currentUser.getIdToken(/* forceRefresh */ true)
-        .then(function (idToken) {
-          console.log('USER MAIN =>', user);
-
-          updateUserInfo({jwt: idToken});
-        })
-        .catch(function (error) {
-          console.log('JWT ERROR =>', error);
-        });
-    }
-
-    if (initializing) setInitializing(false);
-  };
   useEffect(() => {
+    const onIdTokenChanged = (userFirebase) => {
+      if (!user && userFirebase) {
+        userGet({ uid: userFirebase.uid })
+          .then((response) => {
+            setUserInfo(response.user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (userFirebase) {
+        auth()
+          .currentUser.getIdToken(true)
+          .then((idToken) => {
+            updateUserInfo({ jwt: idToken });
+          })
+          .catch((error) => {
+            console.log('Error fetching JWT from firebase =>', error);
+          });
+      }
+      if (initializing) setInitializing(false);
+    };
     const subscriber = auth().onIdTokenChanged(onIdTokenChanged);
-
-    return subscriber; // unsubscribe on unmount
+    return subscriber;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initializing]);
+
   useEffect(() => {
     if (userInfo) {
       dispatch(login(userInfo));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo]);
 
-  if (initializing) return null;
-  return (
-    <NavigationContainer>
-      <NativeBaseProvider>
-        {user ? (
-          (console.log('user navigator', user),
-          user.accountType == null ? (
-            <ChoiceScreenNavigator
-              setUserInfo={setUserInfo}
-              setIsLoggingIn={setIsLoggingIn}
-              isNewUser={isNewUser}
-            />
-          ) : user.accountType == 0 ? (
-            <UserTabNavigator />
-          ) : user.isNewUser ? (
-            <EstablishmentRegistrationNavigator />
-          ) : (
-            <EstablishmentOwnerTabNavigator />
-          ))
-        ) : (
-          <WelcomeScreenNavigator
-            setIsNewUser={setIsNewUser}
-            setUserInfo={setUserInfo}
-            setIsLoggingIn={setIsLoggingIn}
-          />
-        )}
-      </NativeBaseProvider>
+  const renderNavigator = () => {
+    if (user) {
+      if (user.accountType === null) {
+        return <ChoiceScreenNavigator />;
+      }
+      if (user.accountType === 0) {
+        return <UserTabNavigator />;
+      }
+      if (user.isNewUser && user.accountType === 1) {
+        return <EstablishmentRegistrationForm />;
+      }
+      if (user.accountType === 1) {
+        return <EstablishmentOwnerTabNavigator />;
+      }
+    }
+    return <WelcomeScreenNavigator />;
+  };
 
-      {/* <EstablishmentRegistrationNavigator /> */}
-      {/* {user && console.log('USER NAVIGATOR', user)}
-      {user && user ? (
-        <LoggedInNavigator />
-      ) : (
-        <WelcomeScreenNavigator
-          onAuthStateChanged={onAuthStateChanged}
-          initializing={initializing}
-        />
-      )} */}
-      {/* <LoggedInNavigator /> */}
-    </NavigationContainer>
-  );
-};
+  if (initializing) return null;
+  return <AppContext.Provider value={contextValue}>{renderNavigator()}</AppContext.Provider>;
+}
 
 export default MainNavigator;

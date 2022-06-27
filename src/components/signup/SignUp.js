@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {
   Input,
@@ -17,29 +18,23 @@ import {
   HStack,
   Text,
 } from 'native-base';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
-import React, {useState, useEffect} from 'react';
-import {signupStyle} from './signupStyle';
-import {LoadSignUpImg} from '../../assets/getImages';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
-import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
-import {
-  login,
-  logout,
-  updateUserInfo,
-  selectUser,
-} from '../../redux/features/userSlice';
+import signUpStyle from './signUpStyle';
+import { LoadSignUpImg } from '../../assets/getImages';
+import { fetchGoogleKey, selectorGoogle } from '../../redux/features/googleSlice';
+import { selectUser } from '../../redux/features/userSlice';
 import userPost from '../../api/userPost';
 import userGet from '../../api/userGet';
-const styles = signupStyle;
 
-const SignUp = ({signUpType, setUserInfo}) => {
-  const google_key = useSelector(selectorGoogle);
+const styles = signUpStyle;
+
+function SignUp({ signUpType, setUserInfo }) {
+  const googleKey = useSelector(selectorGoogle);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState();
@@ -56,13 +51,10 @@ const SignUp = ({signUpType, setUserInfo}) => {
   const saveUserToFirebase = () => {
     // console.log('USERFB =>', userFB.authType);
     // console.log('USER IF SAVE TO FIREBASE', user);
-    if (
-      (userFB.isNewUser && userFB.authType == 'google') ||
-      userFB.authType == 'emailpassword'
-    ) {
+    if ((userFB.isNewUser && userFB.authType === 'google') || userFB.authType === 'emailpassword') {
       userPost({
-        name: userFB.authType == 'google' ? userFB.displayName : ime,
-        lastname: userFB.authType == 'google' ? null : prezime,
+        name: userFB.authType === 'google' ? userFB.displayName : ime,
+        lastname: userFB.authType === 'google' ? null : prezime,
         authType: userFB.authType,
         photoURL:
           userFB.photoURL == null
@@ -70,16 +62,16 @@ const SignUp = ({signUpType, setUserInfo}) => {
             : userFB.photoURL,
         accountType: signUpType,
         UID: userFB.uid,
-      }).then(response => {
+      }).then((response) => {
         setUserInfo(response.user);
         console.log('API RESPONSE =>', response.user);
       });
     } else {
-      userGet({uid: userFB.uid})
-        .then(response => {
+      userGet({ uid: userFB.uid })
+        .then((response) => {
           setUserInfo(response.user);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
@@ -89,19 +81,17 @@ const SignUp = ({signUpType, setUserInfo}) => {
     setSignUpUrl(await LoadSignUpImg());
   };
   const SignUpUser = () => {
-    var errors = {};
+    const errors = {};
     if (!ime || ime.trim().length < 1) errors.ime = 'Ime je obavezno';
-    if (!prezime || prezime.trim().length < 1)
-      errors.prezime = 'Prezime je obavezno';
-    if (password != confirmPassword)
-      errors.confirmPassword = 'Lozinke se moraju podudarati';
+    if (!prezime || prezime.trim().length < 1) errors.prezime = 'Prezime je obavezno';
+    if (password !== confirmPassword) errors.confirmPassword = 'Lozinke se moraju podudarati';
     if (!password) errors.password = 'Lozinka je obavezna';
     if (!email) errors.email = 'Email je obavezan';
 
     if (email && password) {
       auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(userCredentials => {
+        .then((userCredentials) => {
           console.log('USER SIGN IN=> ', userCredentials.user);
 
           setUserFB({
@@ -113,7 +103,7 @@ const SignUp = ({signUpType, setUserInfo}) => {
           setSignUpSuccess(true);
           console.log('User account created & signed in!');
         })
-        .catch(error => {
+        .catch((error) => {
           if (error.code === 'auth/email-already-in-use') {
             errors.email = 'Odabrani email već postoji';
           }
@@ -130,11 +120,11 @@ const SignUp = ({signUpType, setUserInfo}) => {
     setValidationError(errors);
   };
   const onGoogleButtonPress = async () => {
-    const {idToken} = await GoogleSignin.signIn();
+    const { idToken } = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
     const credentials = auth().signInWithCredential(googleCredential);
-    credentials.then(credential => {
+    credentials.then((credential) => {
       setUserFB({
         uid: credential.user.uid,
         displayName: credential.user.displayName,
@@ -144,19 +134,20 @@ const SignUp = ({signUpType, setUserInfo}) => {
       });
 
       setSignUpSuccess(true);
-      //saveUserToFirebase();
+      // saveUserToFirebase();
     });
 
     return credentials;
   };
 
   GoogleSignin.configure({
-    webClientId: google_key,
+    webClientId: googleKey,
   });
 
   useEffect(() => {
     dispatch(fetchGoogleKey());
     GetUrls();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -164,20 +155,22 @@ const SignUp = ({signUpType, setUserInfo}) => {
     if (userFB) {
       saveUserToFirebase();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userFB]);
 
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.imageContainer}>
-        <View style={styles.imageVeiw}>
-          <Image style={styles.image} source={{uri: SignUpUrl}} />
+        <View style={styles.imageView}>
+          <Image style={styles.image} source={{ uri: SignUpUrl }} />
         </View>
       </View>
       <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS == 'ios' ? 0 : 20}
-        enabled={Platform.OS === 'ios' ? true : false}
-        style={styles.container}>
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        enabled={Platform.OS === 'ios'}
+        style={styles.container}
+      >
         <View style={styles.paperView}>
           <View style={styles.headerView}>
             <Heading
@@ -186,7 +179,8 @@ const SignUp = ({signUpType, setUserInfo}) => {
               color="coolGray.800"
               _dark={{
                 color: 'warmGray.50',
-              }}>
+              }}
+            >
               Registracija
             </Heading>
           </View>
@@ -209,27 +203,23 @@ const SignUp = ({signUpType, setUserInfo}) => {
                         />
                       }
                       placeholder="Ime"
-                      onChangeText={text => setIme(text)}
+                      onChangeText={(text) => setIme(text)}
                       value={ime}
                     />
-                    <FormControl.ErrorMessage
-                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                    <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                       {validationError.ime}
                     </FormControl.ErrorMessage>
                   </FormControl>
-                  <FormControl
-                    flex={0.45}
-                    isInvalid={'prezime' in validationError}>
+                  <FormControl flex={0.45} isInvalid={'prezime' in validationError}>
                     <Input
                       variant="underlined"
                       fontSize={15}
                       color="black"
-                      onChangeText={value => setPrezime(value)}
+                      onChangeText={(value) => setPrezime(value)}
                       value={prezime}
                       placeholder="Prezime"
                     />
-                    <FormControl.ErrorMessage
-                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                    <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                       {validationError.prezime}
                     </FormControl.ErrorMessage>
                   </FormControl>
@@ -240,13 +230,14 @@ const SignUp = ({signUpType, setUserInfo}) => {
                   w={{
                     base: '100%',
                     md: '30%',
-                  }}>
+                  }}
+                >
                   <Input
                     variant="underlined"
                     fontSize={15}
                     color="black"
                     keyboardType="email-address"
-                    onChangeText={value => setEmail(value)}
+                    onChangeText={(value) => setEmail(value)}
                     value={email}
                     InputLeftElement={
                       <Icon
@@ -259,8 +250,7 @@ const SignUp = ({signUpType, setUserInfo}) => {
                     }
                     placeholder="Email"
                   />
-                  <FormControl.ErrorMessage
-                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                  <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                     {validationError.email}
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -270,13 +260,14 @@ const SignUp = ({signUpType, setUserInfo}) => {
                   w={{
                     base: '100%',
                     md: '30%',
-                  }}>
+                  }}
+                >
                   <Input
                     variant="underlined"
                     fontSize={15}
                     color="black"
-                    secureTextEntry={true}
-                    onChangeText={value => setPassword(value)}
+                    secureTextEntry
+                    onChangeText={(value) => setPassword(value)}
                     value={password}
                     InputLeftElement={
                       <Icon
@@ -289,8 +280,7 @@ const SignUp = ({signUpType, setUserInfo}) => {
                     }
                     placeholder="Lozinka"
                   />
-                  <FormControl.ErrorMessage
-                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                  <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                     {validationError.password}
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -300,13 +290,14 @@ const SignUp = ({signUpType, setUserInfo}) => {
                   w={{
                     base: '100%',
                     md: '30%',
-                  }}>
+                  }}
+                >
                   <Input
                     variant="underlined"
                     fontSize={15}
                     color="black"
-                    secureTextEntry={true}
-                    onChangeText={value => setConfirmPassword(value)}
+                    secureTextEntry
+                    onChangeText={(value) => setConfirmPassword(value)}
                     value={confirmPassword}
                     InputLeftElement={
                       <Icon
@@ -319,8 +310,7 @@ const SignUp = ({signUpType, setUserInfo}) => {
                     }
                     placeholder="Potvrdi lozinku"
                   />
-                  <FormControl.ErrorMessage
-                    leftIcon={<WarningOutlineIcon size="xs" />}>
+                  <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                     {validationError.confirmPassword}
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -343,11 +333,10 @@ const SignUp = ({signUpType, setUserInfo}) => {
                   <HStack marginY={3}>
                     <GoogleSigninButton
                       onPress={onGoogleButtonPress}
-                      style={{width: 200, height: 50}}
+                      style={{ width: 200, height: 50 }}
                       size={GoogleSigninButton.Size.Wide}
-                      color={
-                        GoogleSigninButton.Color.Light
-                      }></GoogleSigninButton>
+                      color={GoogleSigninButton.Color.Light}
+                    />
                   </HStack>
                 </Center>
               </VStack>
@@ -357,7 +346,8 @@ const SignUp = ({signUpType, setUserInfo}) => {
                 position="absolute"
                 justifyContent="center"
                 alignItems="center"
-                bottom={1}>
+                bottom={1}
+              >
                 <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
               </HStack>
             </Box>
@@ -366,6 +356,11 @@ const SignUp = ({signUpType, setUserInfo}) => {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
+}
+
+SignUp.propTypes = {
+  signUpType: PropTypes.number.isRequired,
+  setUserInfo: PropTypes.func.isRequired,
 };
 
 export default SignUp;

@@ -1,6 +1,7 @@
-import {StyleSheet} from 'react-native';
-import {primary} from '../../../../assets/getColors';
-export const userBookingHistoryStyles = StyleSheet.create({
+import { StyleSheet } from 'react-native';
+import { primary } from '../../../../assets/getColors';
+
+const userBookingHistoryStyles = StyleSheet.create({
   topHeader__View: {
     flex: 1,
     flexDirection: 'row',
@@ -15,3 +16,5 @@ export const userBookingHistoryStyles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default userBookingHistoryStyles;

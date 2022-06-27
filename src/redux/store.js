@@ -1,4 +1,4 @@
-import {configureStore} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import googleReducer from './features/googleSlice';
 import userReducer from './features/userSlice';
 import formReducer from './features/registrationFormSlice';

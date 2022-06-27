@@ -1,7 +1,8 @@
-import {StyleSheet} from 'react-native';
-import {primary} from '../../../../assets/getColors';
-export const userProfileStyles = StyleSheet.create({
-  mainView: {flex: 1},
+import { StyleSheet } from 'react-native';
+import { primary } from '../../../../assets/getColors';
+
+const userProfileStyles = StyleSheet.create({
+  mainView: { flex: 1 },
   userInfo__mainView: {
     flex: 1,
     maxHeight: '22%',
@@ -18,7 +19,7 @@ export const userProfileStyles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  userInfo__photo: {width: 50, height: 50},
+  userInfo__photo: { width: 50, height: 50 },
   userInfo__nameView: {
     flex: 0.6,
     justifyContent: 'center',
@@ -39,7 +40,7 @@ export const userProfileStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  userDetails__photo: {width: 75, height: 75},
+  userDetails__photo: { width: 75, height: 75 },
   userDetails__formView: {
     flex: 1,
     marginHorizontal: '5%',
@@ -66,5 +67,7 @@ export const userProfileStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  SignOutButton__text: {fontSize: 15, color: 'white', fontWeight: 'bold'},
+  SignOutButton__text: { fontSize: 15, color: 'white', fontWeight: 'bold' },
 });
+
+export default userProfileStyles;

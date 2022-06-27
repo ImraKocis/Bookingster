@@ -1,10 +1,9 @@
-import react from 'react';
-import {StyleSheet} from 'react-native';
-import {primary, backgroundColor} from '../../assets/getColors';
+import { StyleSheet } from 'react-native';
+import { primary, backgroundColor } from '../../assets/getColors';
 
-export const signupStyle = StyleSheet.create({
-  container: {flex: 1},
-  mainView: {flex: 1, backgroundColor: backgroundColor},
+const signUpStyle = StyleSheet.create({
+  container: { flex: 1 },
+  mainView: { flex: 1, backgroundColor },
   paperView: {
     flex: 1,
     backgroundColor: 'white',
@@ -15,7 +14,7 @@ export const signupStyle = StyleSheet.create({
   imageContainer: {
     flex: 0.5,
   },
-  imageVeiw: {
+  imageView: {
     position: 'absolute',
     top: 10,
     bottom: 10,
@@ -37,7 +36,7 @@ export const signupStyle = StyleSheet.create({
     marginLeft: '10%',
     marginTop: 10,
   },
-  header: {fontSize: 35, color: 'black'},
+  header: { fontSize: 35, color: 'black' },
   formView: {
     zIndex: 3,
     flex: 1,
@@ -80,7 +79,7 @@ export const signupStyle = StyleSheet.create({
     backgroundColor: 'white',
     marginBottom: 10,
   },
-  buttonVeiw: {
+  buttonView: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 7,
@@ -98,21 +97,21 @@ export const signupStyle = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  errorText: {marginTop: 7},
+  errorText: { marginTop: 7 },
   signWithView: {
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 2,
   },
-  signWithText: {color: '#949292', fontSize: 16, alignSelf: 'center'},
-  goolgeButtonView: {
+  signWithText: { color: '#949292', fontSize: 16, alignSelf: 'center' },
+  googleButtonView: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 5,
   },
-  googleButton: {justifyContent: 'center'},
-  googleImage: {width: 40, height: 40},
+  googleButton: { justifyContent: 'center' },
+  googleImage: { width: 40, height: 40 },
   footerView: {
     padding: 10,
     flex: 0.15,
@@ -120,5 +119,7 @@ export const signupStyle = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-end',
   },
-  footerText: {color: '#949292', alignSelf: 'center'},
+  footerText: { color: '#949292', alignSelf: 'center' },
 });
+
+export default signUpStyle;

@@ -1,22 +1,23 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-
+import { NativeBaseProvider } from 'native-base';
+import { Provider } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
 import store from './src/redux/store';
-import {Provider} from 'react-redux';
 import MainNavigator from './src/navigator/MainNavigator';
-import Hint from './src/components/ugostiteljForm/hint/Hint';
 import EstablishmentRegistrationForm from './src/components/ugostiteljForm/EstablishmentRegistrationForm';
-import {NativeBaseProvider} from 'native-base';
 
-const App = () => {
+function App() {
   return (
     <Provider store={store}>
-      {/* <MainNavigator /> */}
-      <NativeBaseProvider>
-        <EstablishmentRegistrationForm />
-      </NativeBaseProvider>
+      <NavigationContainer>
+        <NativeBaseProvider>
+          <MainNavigator />
+          {/* <EstablishmentRegistrationForm /> */}
+        </NativeBaseProvider>
+      </NavigationContainer>
     </Provider>
   );
-};
+}
 
 export default App;

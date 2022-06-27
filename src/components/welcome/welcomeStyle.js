@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
-import {backgroundColor, primary} from '../../assets/getColors';
+import { StyleSheet } from 'react-native';
+import { backgroundColor, primary } from '../../assets/getColors';
 
-export const welcomeStyle = StyleSheet.create({
+const welcomeStyle = StyleSheet.create({
   welcomeScreen: {
-    backgroundColor: backgroundColor,
+    backgroundColor,
     flex: 1,
   },
   button: {
@@ -19,5 +19,7 @@ export const welcomeStyle = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  image: {width: 310, height: 250},
+  image: { width: 310, height: 250 },
 });
+
+export default welcomeStyle;

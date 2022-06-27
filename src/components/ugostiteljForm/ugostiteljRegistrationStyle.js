@@ -1,2 +1,5 @@
-import {StyleSheet} from 'react-native';
-export const ugostiteljRegistrationStyle = StyleSheet.create({});
+import { StyleSheet } from 'react-native';
+
+const ugostiteljRegistrationStyle = StyleSheet.create({});
+
+export default ugostiteljRegistrationStyle;

@@ -1,35 +1,36 @@
-import {View, Image, TouchableOpacity} from 'react-native';
-import {Text, HStack, VStack, Center, Heading} from 'native-base';
-import React, {useState, useEffect} from 'react';
-import {LoadChoiceImg} from '../../assets/getImages';
-import {choiceStyle} from './choiceStyle';
-import userPost from '../../api/userPost';
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  logout,
-  selectUser,
-  updateUserInfo,
-} from '../../redux/features/userSlice';
+import { View, Image, TouchableOpacity } from 'react-native';
+import { Text, HStack, VStack, Center, Heading } from 'native-base';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
+import { LoadChoiceImg } from '../../assets/getImages';
+import choiceStyle from './choiceStyle';
+import userPost from '../../api/userPost';
+import { logout, selectUser } from '../../redux/features/userSlice';
+
 const styles = choiceStyle;
 
-export default function Choice({navigation, isNewUser, setUserInfo}) {
+function Choice({ navigation, isNewUser, setUserInfo }) {
   const [choiceImg, setChoiceImg] = useState();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
+
   const LogoutUser = () => {
     dispatch(logout());
     auth().signOut();
   };
+
   const GetUrls = async () => {
     setChoiceImg(await LoadChoiceImg());
   };
-  const saveUserToFirebase = signUpType => {
-    //console.log('signUpType', signUpType);
-    //dispatch(updateUserInfo({accountType: signUpType}));
-    //console.log('USEREEEEEE:', user);
+
+  const saveUserToFirebase = (signUpType) => {
+    // console.log('signUpType', signUpType);
+    // dispatch(updateUserInfo({accountType: signUpType}));
+    // console.log('USEREEEEEE:', user);
     const splitName = user.displayName.split(' ');
-    const {0: fN, 1: lN} = splitName;
+    const { 0: fN, 1: lN } = splitName;
     console.log('PHOTO_URL', user.photoURL);
     userPost({
       name: user.displayName,
@@ -41,19 +42,21 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
           : user.photoURL,
       accountType: signUpType,
       UID: user.uid,
-    }).then(response => {
+    }).then((response) => {
       setUserInfo(response.user);
       console.log('API RESPONSE =>', response.user);
     });
   };
+
   useEffect(() => {
     GetUrls();
   }, []);
+
   return (
     <View style={styles.choiceScreen}>
       <Center flex={0.4} marginTop={10}>
         <VStack flex={1}>
-          <Image style={styles.image} source={{uri: choiceImg}} />
+          <Image style={styles.image} source={{ uri: choiceImg }} />
         </VStack>
       </Center>
       <Center marginTop={5} flex={0.1}>
@@ -64,7 +67,8 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
             color="coolGray.800"
             _dark={{
               color: 'warmGray.50',
-            }}>
+            }}
+          >
             Vi ste?
           </Heading>
         </HStack>
@@ -73,36 +77,34 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
         <VStack flex={1}>
           <HStack marginY={7}>
             <Center>
-              {/*navigacija na novi racun te ugostitelj hint, itd. */}
+              {/* navigacija na novi racun te ugostitelj hint, itd. */}
 
               <TouchableOpacity
                 style={styles.button}
                 onPress={() =>
-                  isNewUser
-                    ? saveUserToFirebase(1)
-                    : navigation.navigate('Novi_racun_ugostitelj')
-                }>
+                  isNewUser ? saveUserToFirebase(1) : navigation.navigate('Novi_racun_ugostitelj')
+                }
+              >
                 <Text style={styles.buttonText}>Ugostitelj</Text>
               </TouchableOpacity>
             </Center>
           </HStack>
           <HStack>
             <Center>
-              {/*navigacija na novi reacun te prijavu */}
+              {/* navigacija na novi racun te prijavu */}
               <TouchableOpacity
                 style={styles.button}
                 onPress={() =>
-                  isNewUser
-                    ? saveUserToFirebase(0)
-                    : navigation.navigate('Novi_racun_korisnik')
-                }>
+                  isNewUser ? saveUserToFirebase(0) : navigation.navigate('Novi_racun_korisnik')
+                }
+              >
                 <Text style={styles.buttonText}>Korisnik</Text>
               </TouchableOpacity>
             </Center>
           </HStack>
           <HStack>
             <Center>
-              {/*navigacija na novi reacun te prijavu */}
+              {/* navigacija na novi racun te prijavu */}
               <TouchableOpacity style={styles.button} onPress={LogoutUser}>
                 <Text style={styles.buttonText}>Odjava</Text>
               </TouchableOpacity>
@@ -116,10 +118,22 @@ export default function Choice({navigation, isNewUser, setUserInfo}) {
           position="absolute"
           justifyContent="center"
           alignItems="center"
-          bottom={1}>
+          bottom={1}
+        >
           <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
         </HStack>
       </Center>
     </View>
   );
 }
+
+Choice.propTypes = {
+  isNewUser: PropTypes.bool,
+  setUserInfo: PropTypes.func.isRequired,
+};
+
+Choice.defaultProps = {
+  isNewUser: 'false',
+};
+
+export default Choice;

@@ -1,12 +1,13 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import React from 'react';
-import {userProfileStyles} from '../styles/userProfileStyles';
 import auth from '@react-native-firebase/auth';
-import {logout} from '../../../../redux/features/userSlice';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import userProfileStyles from '../styles/userProfileStyles';
+import { logout } from '../../../../redux/features/userSlice';
+
 const styles = userProfileStyles;
 
-const SignOutButton = () => {
+function SignOutButton() {
   const dispatch = useDispatch();
   const LogoutUser = () => {
     dispatch(logout());
@@ -17,6 +18,6 @@ const SignOutButton = () => {
       <Text style={styles.SignOutButton__text}>Odjava</Text>
     </TouchableOpacity>
   );
-};
+}
 
 export default SignOutButton;

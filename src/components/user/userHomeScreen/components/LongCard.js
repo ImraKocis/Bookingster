@@ -1,37 +1,32 @@
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Box, HStack, Text, Center, Icon, VStack} from 'native-base';
-import {LoadTestImage} from '../../../../assets/getImages';
-import {userHomeStyles} from '../styles/userHomeStyles';
+import { View, Image, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Box, HStack, Text, Center, Icon, VStack } from 'native-base';
 import IconVector from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
+import { LoadTestImage } from '../../../../assets/getImages';
+import userHomeStyles from '../styles/userHomeStyles';
 
 const styles = userHomeStyles;
-const LongCard = ({buttonText}) => {
+function LongCard({ buttonText }) {
   const [choiceImg, setChoiceImg] = useState('');
+
   const fetchImg = async () => {
     setChoiceImg(await LoadTestImage());
   };
+
   useEffect(() => {
     fetchImg();
   }, []);
+
   return (
     <TouchableWithoutFeedback onPress={() => console.log('LongCard pressed')}>
       <HStack style={styles.LongCardView}>
         <Center alignContent="center" flex={0.4} backgroundColor="transparent">
-          <Image
-            alt="Naziv objekta"
-            style={styles.image__long}
-            source={{uri: choiceImg}}
-          />
+          <Image alt="Naziv objekta" style={styles.image__long} source={{ uri: choiceImg }} />
         </Center>
         <VStack flex={0.6}>
           <Box marginLeft={3} marginTop={3} flex={0.3}>
-            <Text fontWeight={'bold'} fontSize={'md'}>
+            <Text fontWeight="bold" fontSize="md">
               Bistro Pizzeria Ivona
             </Text>
           </Box>
@@ -47,10 +42,11 @@ const LongCard = ({buttonText}) => {
               <Text
                 flex={1}
                 alignSelf="center"
-                fontWeight={'normal'}
+                fontWeight="normal"
                 marginRight={1}
-                flexWrap={'wrap'}
-                fontSize={'xs'}>
+                flexWrap="wrap"
+                fontSize="xs"
+              >
                 Vladimira Nadzora 45, Slatina
               </Text>
             </HStack>
@@ -59,12 +55,15 @@ const LongCard = ({buttonText}) => {
             <View style={styles.longCard__Button}>
               <Text style={styles.longCard__ButtonText}>{buttonText}</Text>
             </View>
-            {/*S propsima iz tab navigatora slat tekst za btn=> rezerviraj ili provjeri ovisno o tabu(za history) */}
           </TouchableWithoutFeedback>
         </VStack>
       </HStack>
     </TouchableWithoutFeedback>
   );
+}
+
+LongCard.propTypes = {
+  buttonText: PropTypes.string.isRequired,
 };
 
 export default LongCard;

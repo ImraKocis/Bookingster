@@ -1,12 +1,12 @@
-import {View, Image, TouchableOpacity} from 'react-native';
-import {Text, HStack, VStack, Center, Heading} from 'native-base';
-import React, {useState, useEffect} from 'react';
-import {LoadWelcomeImg} from '../../assets/getImages';
-import {welcomeStyle} from './welcomeStyle';
+import { View, Image, TouchableOpacity } from 'react-native';
+import { Text, HStack, VStack, Center, Heading } from 'native-base';
+import React, { useState, useEffect } from 'react';
+import { LoadWelcomeImg } from '../../assets/getImages';
+import welcomeStyle from './welcomeStyle';
 
 const styles = welcomeStyle;
 
-export default function Welcome({navigation}) {
+function Welcome({ navigation }) {
   const [welcomeImg, setWelcomeImg] = useState();
 
   const GetUrls = async () => {
@@ -16,11 +16,12 @@ export default function Welcome({navigation}) {
   useEffect(() => {
     GetUrls();
   }, []);
+
   return (
     <View style={styles.welcomeScreen}>
       <Center flex={0.4} marginTop={10}>
         <VStack flex={1}>
-          <Image style={styles.image} source={{uri: welcomeImg}} />
+          <Image style={styles.image} source={{ uri: welcomeImg }} />
         </VStack>
       </Center>
       <Center marginTop={5} flex={0.1}>
@@ -31,7 +32,8 @@ export default function Welcome({navigation}) {
             color="coolGray.800"
             _dark={{
               color: 'warmGray.50',
-            }}>
+            }}
+          >
             Dobrodošli
           </Heading>
         </HStack>
@@ -42,7 +44,8 @@ export default function Welcome({navigation}) {
             <Center>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('Prijava')}>
+                onPress={() => navigation.navigate('Prijava')}
+              >
                 <Text style={styles.buttonText}>Prijava</Text>
               </TouchableOpacity>
             </Center>
@@ -51,7 +54,8 @@ export default function Welcome({navigation}) {
             <Center>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('Choice_navigator')}>
+                onPress={() => navigation.navigate('Choice_navigator')}
+              >
                 <Text style={styles.buttonText}>Novi račun</Text>
               </TouchableOpacity>
             </Center>
@@ -64,10 +68,13 @@ export default function Welcome({navigation}) {
           position="absolute"
           justifyContent="center"
           alignItems="center"
-          bottom={1}>
+          bottom={1}
+        >
           <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
         </HStack>
       </Center>
     </View>
   );
 }
+
+export default Welcome;

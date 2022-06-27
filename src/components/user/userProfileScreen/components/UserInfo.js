@@ -1,9 +1,11 @@
-import {View, Image} from 'react-native';
+import { View, Image } from 'react-native';
 import React from 'react';
-import {userProfileStyles} from '../styles/userProfileStyles';
-import {Heading, Text} from 'native-base';
+import { Heading, Text } from 'native-base';
+import userProfileStyles from '../styles/userProfileStyles';
+
 const styles = userProfileStyles;
-const UserInfo = () => {
+
+function UserInfo() {
   return (
     <View style={styles.userInfo__mainView}>
       <View style={styles.userInfo__photoView}>
@@ -15,13 +17,13 @@ const UserInfo = () => {
         />
       </View>
       <View style={styles.userInfo__nameView}>
-        <Heading size={'xl'} fontWeight={400}>
+        <Heading size="xl" fontWeight={400}>
           Ivan Horvat
         </Heading>
-        <Text color={'gray.500'}>ivan.horvat@gmial.com</Text>
+        <Text color="gray.500">ivan.horvat@gmial.com</Text>
       </View>
     </View>
   );
-};
+}
 
 export default UserInfo;

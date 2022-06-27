@@ -1,16 +1,16 @@
-import {View, Text, Image} from 'react-native';
+import { View, Image } from 'react-native';
 import React from 'react';
-import {userHomeStyles} from '../styles/userHomeStyles';
-import {useSelector} from 'react-redux';
-import {selectUser} from '../../../../redux/features/userSlice';
+import { useSelector } from 'react-redux';
+import userHomeStyles from '../styles/userHomeStyles';
+import { selectUser } from '../../../../redux/features/userSlice';
 
 const styles = userHomeStyles;
 
-const ProfilePicture = () => {
+// touchableOpacity is used to make the image clickable
+function ProfilePicture() {
   const user = useSelector(selectUser);
   return (
     <View style={styles.profile__view}>
-      {/*touchableOpacity is used to make the image clickable*/}
       <View style={styles.profile__imageView}>
         <Image
           style={styles.profile__image}
@@ -21,6 +21,6 @@ const ProfilePicture = () => {
       </View>
     </View>
   );
-};
+}
 
 export default ProfilePicture;

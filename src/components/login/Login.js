@@ -1,4 +1,5 @@
 import {
+  Platform,
   Image,
   SafeAreaView,
   View,
@@ -17,31 +18,23 @@ import {
   WarningOutlineIcon,
   Heading,
 } from 'native-base';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
-import {useSelector, useDispatch} from 'react-redux';
-import {loginStyle} from './loginStyle';
+import { useSelector, useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
-
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
-import {LoadSignInImg} from '../../assets/getImages';
-import {fetchGoogleKey, selectorGoogle} from '../../redux/features/googleSlice';
-import {
-  login,
-  logout,
-  updateUserInfo,
-  selectUser,
-} from '../../redux/features/userSlice';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import loginStyle from './loginStyle';
+import { LoadSignInImg } from '../../assets/getImages';
+import { fetchGoogleKey, selectorGoogle } from '../../redux/features/googleSlice';
+import { updateUserInfo } from '../../redux/features/userSlice';
 import userGet from '../../api/userGet';
 
 const styles = loginStyle;
 
-export default function Login({setUserInfo, setIsNewUser}) {
-  const google_key = useSelector(selectorGoogle);
-  //const user = useSelector(selectUser);
+function Login({ setUserInfo, setIsNewUser }) {
+  const googleKey = useSelector(selectorGoogle);
+  // const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [SignUpUrl, setSignUpUrl] = useState('');
   const [email, setEmail] = useState();
@@ -54,38 +47,36 @@ export default function Login({setUserInfo, setIsNewUser}) {
   };
 
   const LoginUser = () => {
-    var errors = {};
+    const errors = {};
     if (!email) errors.email = 'Email je obavezan';
     if (!password) errors.password = 'Lozinka je obavezna';
     if (email && password) {
       auth()
         .signInWithEmailAndPassword(email, password)
-        .then(userCredentials => {
+        .then((userCredentials) => {
           console.log('Logiran');
-          userGet(userCredentials.user).then(response => {
+          userGet(userCredentials.user).then((response) => {
             setUserInfo(response.user);
           });
         })
-        .catch(error => {
-          if (error.code === 'auth/invalid-email')
-            errors.email = 'Neispravan email';
-          if (error.code === 'auth/invalid-password')
-            errors.password = 'Naispravna lozinka';
+        .catch((error) => {
+          if (error.code === 'auth/invalid-email') errors.email = 'Neispravan email';
+          if (error.code === 'auth/invalid-password') errors.password = 'Neispravna lozinka';
           console.log(error);
         });
     }
     setValidationError(errors);
   };
   GoogleSignin.configure({
-    webClientId: google_key,
+    webClientId: googleKey,
   });
 
   const onGoogleButtonPress = async () => {
-    const {idToken} = await GoogleSignin.signIn();
+    const { idToken } = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
     const credentials = auth().signInWithCredential(googleCredential);
-    credentials.then(credential => {
+    credentials.then((credential) => {
       setIsNewUser(credential.additionalUserInfo.isNewUser);
       if (credential.additionalUserInfo.isNewUser) {
         console.log('peroperic');
@@ -96,11 +87,11 @@ export default function Login({setUserInfo, setIsNewUser}) {
             photoURL: credential.user.photoURL,
             displayName: credential.user.displayName,
             uid: credential.user.uid,
-          }),
+          })
         );
       } else {
         console.log('LOGIN UID:', credential.user);
-        userGet(credential.user).then(response => {
+        userGet(credential.user).then((response) => {
           console.log('GET_USER_INFO_API', response.user);
           setUserInfo(response.user);
         });
@@ -112,21 +103,23 @@ export default function Login({setUserInfo, setIsNewUser}) {
   useEffect(() => {
     GetUrls();
     dispatch(fetchGoogleKey());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <SafeAreaView style={styles.mainView}>
       <>
         <View style={styles.imageContainer}>
-          <View style={styles.imageVeiw}>
-            <Image style={styles.image} source={{uri: SignUpUrl}}></Image>
+          <View style={styles.imageView}>
+            <Image style={styles.image} source={{ uri: SignUpUrl }} />
           </View>
         </View>
         <KeyboardAvoidingView
-          behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS == 'ios' ? 0 : 20}
-          enabled={Platform.OS === 'ios' ? true : false}
-          style={styles.container}>
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+          enabled={Platform.OS === 'ios'}
+          style={styles.container}
+        >
           <View style={styles.paperView}>
             <View style={styles.headerView}>
               <Heading
@@ -135,7 +128,8 @@ export default function Login({setUserInfo, setIsNewUser}) {
                 color="coolGray.800"
                 _dark={{
                   color: 'warmGray.50',
-                }}>
+                }}
+              >
                 Prijava
               </Heading>
             </View>
@@ -148,13 +142,14 @@ export default function Login({setUserInfo, setIsNewUser}) {
                     w={{
                       base: '100%',
                       md: '30%',
-                    }}>
+                    }}
+                  >
                     <Input
                       variant="underlined"
                       fontSize={15}
                       keyboardType="email-address"
                       color="black"
-                      onChangeText={value => setEmail(value)}
+                      onChangeText={(value) => setEmail(value)}
                       InputLeftElement={
                         <Icon
                           as={<IconVector name="alternate-email" />}
@@ -166,8 +161,7 @@ export default function Login({setUserInfo, setIsNewUser}) {
                       }
                       placeholder="Email"
                     />
-                    <FormControl.ErrorMessage
-                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                    <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                       {validationError.email}
                     </FormControl.ErrorMessage>
                   </FormControl>
@@ -177,13 +171,14 @@ export default function Login({setUserInfo, setIsNewUser}) {
                     w={{
                       base: '100%',
                       md: '30%',
-                    }}>
+                    }}
+                  >
                     <Input
                       variant="underlined"
                       fontSize={15}
                       color="black"
-                      secureTextEntry={true}
-                      onChangeText={value => setPassword(value)}
+                      secureTextEntry
+                      onChangeText={(value) => setPassword(value)}
                       InputLeftElement={
                         <Icon
                           as={<IconVector name="lock-outline" />}
@@ -195,8 +190,7 @@ export default function Login({setUserInfo, setIsNewUser}) {
                       }
                       placeholder="Lozinka"
                     />
-                    <FormControl.ErrorMessage
-                      leftIcon={<WarningOutlineIcon size="xs" />}>
+                    <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                       {validationError.password}
                     </FormControl.ErrorMessage>
                   </FormControl>
@@ -209,11 +203,10 @@ export default function Login({setUserInfo, setIsNewUser}) {
                     <HStack marginY={5}>
                       <GoogleSigninButton
                         onPress={onGoogleButtonPress}
-                        style={{width: 200, height: 50}}
+                        style={{ width: 200, height: 50 }}
                         size={GoogleSigninButton.Size.Wide}
-                        color={
-                          GoogleSigninButton.Color.Light
-                        }></GoogleSigninButton>
+                        color={GoogleSigninButton.Color.Light}
+                      />
                     </HStack>
                   </Center>
                 </VStack>
@@ -223,7 +216,8 @@ export default function Login({setUserInfo, setIsNewUser}) {
                   position="absolute"
                   justifyContent="center"
                   alignItems="center"
-                  bottom={1}>
+                  bottom={1}
+                >
                   <Text>© 2022 Bookingster - Sva prava pridržana.</Text>
                 </HStack>
               </Box>
@@ -234,3 +228,10 @@ export default function Login({setUserInfo, setIsNewUser}) {
     </SafeAreaView>
   );
 }
+
+Login.propTypes = {
+  setUserInfo: PropTypes.func.isRequired,
+  setIsNewUser: PropTypes.func.isRequired,
+};
+
+export default Login;

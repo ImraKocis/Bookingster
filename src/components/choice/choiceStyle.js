@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
-import {backgroundColor, primary} from '../../assets/getColors';
+import { StyleSheet } from 'react-native';
+import { backgroundColor, primary } from '../../assets/getColors';
 
-export const choiceStyle = StyleSheet.create({
+const choiceStyle = StyleSheet.create({
   choiceScreen: {
-    backgroundColor: backgroundColor,
+    backgroundColor,
     flex: 1,
   },
   button: {
@@ -19,5 +19,7 @@ export const choiceStyle = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  image: {width: 310, height: 250},
+  image: { width: 310, height: 250 },
 });
+
+export default choiceStyle;

@@ -1,6 +1,7 @@
-import {StyleSheet} from 'react-native';
-import {backgroundColor, primary} from '../../../../assets/getColors';
-export const userHomeStyles = StyleSheet.create({
+import { StyleSheet } from 'react-native';
+import { backgroundColor, primary } from '../../../../assets/getColors';
+
+const userHomeStyles = StyleSheet.create({
   image: {
     width: 140,
     height: 95,
@@ -88,7 +89,7 @@ export const userHomeStyles = StyleSheet.create({
     marginTop: '5%',
     height: '85%',
     width: '100%',
-    //backgroundColor: 'black',
+    // backgroundColor: 'black',
   },
   list__item: {
     margin: 30,
@@ -106,7 +107,7 @@ export const userHomeStyles = StyleSheet.create({
     fontStyle: 'italic',
   },
   home__view: {
-    backgroundColor: backgroundColor,
+    backgroundColor,
     flex: 1,
     width: '100%',
   },
@@ -127,7 +128,7 @@ export const userHomeStyles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-  profile__image: {width: 50, height: 50, borderRadius: 30},
+  profile__image: { width: 50, height: 50, borderRadius: 30 },
   HeaderView: {
     flex: 1,
 
@@ -136,3 +137,5 @@ export const userHomeStyles = StyleSheet.create({
     marginTop: 30,
   },
 });
+
+export default userHomeStyles;

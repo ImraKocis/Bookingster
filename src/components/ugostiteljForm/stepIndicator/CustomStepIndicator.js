@@ -1,29 +1,33 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import StepIndicator from 'react-native-step-indicator';
-import {Labels} from './labels';
-import {stepIndicatorStyle} from './styles';
-import {useState} from 'react';
-import {useEffect} from 'react';
+import PropTypes from 'prop-types';
+import Labels from './labels';
+import stepIndicatorStyle from './styles';
 
 const labels = Labels;
 const customStyles = stepIndicatorStyle;
 
-const CustomStepIndicator = ({currentPosition, PagerView}) => {
+function CustomStepIndicator({ currentPosition, PagerView }) {
   const [step, setStep] = useState(currentPosition);
 
   useEffect(() => {
     PagerView.current.setPage(step);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
+
   return (
     <StepIndicator
       stepCount={5}
       customStyles={customStyles}
       currentPosition={currentPosition}
-      onPress={val => setStep(val)}
+      onPress={(val) => setStep(val)}
       labels={labels}
     />
   );
+}
+
+CustomStepIndicator.propTypes = {
+  currentPosition: PropTypes.number.isRequired,
 };
 
 export default CustomStepIndicator;

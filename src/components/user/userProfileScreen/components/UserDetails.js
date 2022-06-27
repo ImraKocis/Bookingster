@@ -1,25 +1,18 @@
-import {View, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
-import {userProfileStyles} from '../styles/userProfileStyles';
-import {
-  Heading,
-  Image,
-  Input,
-  Icon,
-  HStack,
-  FormControl,
-  Text,
-} from 'native-base';
+import { View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { Heading, Image, Input, Icon, HStack, FormControl, Text } from 'native-base';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
+import userProfileStyles from '../styles/userProfileStyles';
+
 const styles = userProfileStyles;
 
-const UserDetails = () => {
-  const [name, setName] = useState(''); //ime iz reduxa
-  const [lastName, setLastName] = useState(''); //prezime iz reduxa
-  const [isChanged, setIsChanged] = useState(false); //da li je ime ili prezime promenjeno
+function UserDetails() {
+  const [name, setName] = useState(''); // ime iz reduxa
+  const [lastName, setLastName] = useState(''); // prezime iz reduxa
+  const [isChanged, setIsChanged] = useState(false); // da li je ime ili prezime promenjeno
   return (
     <View style={styles.userDetails__mainView}>
-      <Heading marginLeft={'2%'} marginTop={'2%'} size={'md'} fontWeight={400}>
+      <Heading marginLeft="2%" marginTop="2%" size="md" fontWeight={400}>
         Osobni Podaci
       </Heading>
       <View style={styles.userDetails__photoView}>
@@ -30,14 +23,14 @@ const UserDetails = () => {
             uri: 'https://ui-avatars.com/api/?name=IVAN+HORVAT&background=random&rounded=true',
           }}
         />
-        <Text color={'gray.500'}>Kliknite za promjenu slike</Text>
+        <Text color="gray.500">Kliknite za promjenu slike</Text>
       </View>
       <View style={styles.userDetails__formView}>
         <HStack flex={1} justifyContent="space-between">
           <FormControl flex={0.45}>
             <Input
               variant="underlined"
-              fontSize={'md'}
+              fontSize="md"
               color="black"
               InputLeftElement={
                 <Icon
@@ -50,8 +43,8 @@ const UserDetails = () => {
               }
               placeholder="Ime"
               value={name}
-              //onChangeText={text => setIme(text)}
-              //value={ime}
+              // onChangeText={text => setIme(text)}
+              // value={ime}
             />
             {/* <FormControl.ErrorMessage
                       leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -61,23 +54,23 @@ const UserDetails = () => {
           <FormControl flex={0.45}>
             <Input
               variant="underlined"
-              fontSize={'md'}
+              fontSize="md"
               color="black"
               value={lastName}
-              //onChangeText={value => setPrezime(value)}
-              //value={prezime}
+              // onChangeText={value => setPrezime(value)}
+              // value={prezime}
               placeholder="Prezime"
             />
           </FormControl>
         </HStack>
       </View>
       <TouchableOpacity style={styles.userDetails__formButton}>
-        <Text color={'white'} fontSize={'lg'} fontWeight={'bold'}>
+        <Text color="white" fontSize="lg" fontWeight="bold">
           Promjeni lozinku
         </Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 export default UserDetails;

@@ -1,5 +1,6 @@
-import {secondary, primary} from '../../../assets/getColors';
-export const stepIndicatorStyle = {
+import { secondary, primary } from '../../../assets/getColors';
+
+const stepIndicatorStyle = {
   stepIndicatorSize: 30,
   currentStepIndicatorSize: 40,
   separatorStrokeWidth: 2,
@@ -22,3 +23,5 @@ export const stepIndicatorStyle = {
   labelSize: 13,
   currentStepLabelColor: primary,
 };
+
+export default stepIndicatorStyle;
