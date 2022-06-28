@@ -4,7 +4,7 @@ import { Box, Text, Heading, HStack, Input, VStack } from 'native-base';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import PropTypes from 'prop-types';
+import PropTypes, { nominalTypeHack } from 'prop-types';
 import Footer from '../../Footer';
 
 const phoneRegExp =
@@ -29,22 +29,23 @@ function OsnovniPodaci({ handleRightArrowPress, handleLeftArrowPress, setScreenT
   const [adresa, setAdresa] = useState();
   const [drzava, setDrzava] = useState();
   const [telefon, setTelefon] = useState();
+  const [data, setData] = useState({});
+
+  const obj = { location: {} };
 
   // console.log('useRef', formRef);
 
   useEffect(() => {
     // console.log('Formik Values =====>', formRef.current.values);
 
-    setScreenTwo({
-      location: {
-        address: adresa,
-        city: mjesto,
-        country: drzava,
-      },
-      name: naziv,
-      oib,
-      phoneNumber: telefon,
-    });
+    if (oib) obj.oib = oib;
+    if (naziv) obj.name = naziv;
+    if (adresa) obj.location.address = adresa;
+    if (mjesto) obj.location.city = mjesto;
+    if (drzava) obj.location.country = drzava;
+    if (telefon) obj.phoneNumber = telefon;
+
+    setScreenTwo(obj);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oib, naziv, adresa, drzava, mjesto, telefon]);
 
@@ -67,6 +68,7 @@ function OsnovniPodaci({ handleRightArrowPress, handleLeftArrowPress, setScreenT
           <VStack flex={1}>
             <Input
               onChangeText={handleChange('oib')}
+              // onChange={(e) =>console.log() e.nativeEvent.text}
               onBlur={handleBlur('oib')}
               value={values.oib}
               placeholder="OIB subjekta*"

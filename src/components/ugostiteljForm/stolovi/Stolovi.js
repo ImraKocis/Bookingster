@@ -1,20 +1,31 @@
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Box, HStack, VStack, Text, Input, Divider, Select } from 'native-base';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import { Formik } from 'formik';
+
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import Footer from '../../Footer';
 import { primary } from '../../../assets/getColors';
 
 const validationSchema = yup.object().shape({
-  numOfTables: yup.string().matches('\\d+', 'Unos je dopušten samo za brojeve'),
+  numOfTables: yup
+    .string()
+    .matches('\\d+', 'Unos je dopušten samo za brojeve')
+    .required('Obvezan unos broja stolova'),
+  numOfChairs: yup
+    .string()
+    .matches('\\d+', 'Unos je dopušten samo za brojeve')
+    .required('Obvezan unos broja stolica'),
 });
 
-function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
-  const [selectable, setSelectable] = useState(null);
+function Stolovi({ handleLeftArrowPress, setFormState }) {
+  const [selectable, setSelectable] = useState(true);
   const [numOfSelected, setNumOfSelected] = useState({ numOfSelected: 0 });
+  const [selectedArr, setSelectedArr] = useState([]);
   const [tablesChairs, setTablesChairs] = useState({
     two: 0,
     three: 0,
@@ -29,13 +40,14 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
     },
   ]);
   const handleTableChange = (val) => {
-    // console.log(val);
+    // handleChange('numOfTables');
     const arr = [];
     if (val >= 2 && val <= 99) {
+      // console.log(val);
       for (let i = 1; i <= val; i += 1) {
         arr.push({ index: i, numOfSelectableChairs: i });
       }
-      // console.log(arr);
+      console.log(arr);
       setSelectable(arr);
     }
   };
@@ -44,7 +56,17 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
     // console.log(key);
     setTablesChairs({ ...tablesChairs, [key]: value });
   };
-  console.log(tablesChairs);
+
+  const addTable = (numOfTables, numOfChairs) => {
+    const arr = [];
+
+    console.log(numOfTables, numOfChairs);
+    if (!arr.some((obj) => obj.nChairs === parseInt(numOfChairs, 10))) {
+      arr.push({ nTables: numOfTables, nChairs: numOfChairs });
+      setSelectedArr([...selectedArr, ...arr]);
+    }
+  };
+
   useEffect(() => {
     setNumOfSelected({
       numOfSelected: Object.values(tablesChairs).reduce((a, b) => a + b),
@@ -52,56 +74,45 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
     // console.log(numOfSelected);
   }, [tablesChairs]);
 
-  function renderRow({ selectedVal, objectKey, heading }) {
+  function renderRow(c, t, index) {
+    const nTables = parseInt(t, 10);
+    const nChairs = parseInt(c, 10);
+    console.log(selectedArr);
     return (
-      <HStack mx={2} alignItems="center" flex={1}>
-        <Text flex={0.6} mx={2}>
-          {heading}
-        </Text>
-        <Select
-          minHeight={30}
-          flex={0.4}
-          mx={2}
-          minWidth={100}
-          // placeholder="Broj"
-          mt={1}
-          onValueChange={(itemValue) => handleSelectChange(objectKey, itemValue)}
-          selectedValue={selectedVal.toString()}
-        >
-          {selectable.map((item) => (
-            <Select.Item
-              key={item.index}
-              label={item.numOfSelectableChairs.toString()}
-              value={item.index}
-            />
-          ))}
-        </Select>
-      </HStack>
+      <View key={index}>
+        <HStack marginRight={2} justifyContent="center" alignItems="center">
+          <Text fontSize="md" mx={10}>
+            {t} {nTables === 1 && 'stol'} {nTables > 1 && nTables < 5 ? 'stola' : 'stolova'} s {c}{' '}
+            {nChairs === 1 ? 'mjestom' : 'mjesta'}
+          </Text>
+          <MaterialIcons name="highlight-remove" size={25} color={primary} />
+        </HStack>
+        <HStack justifyContent="center">
+          <Divider color="black" my={2} width="90%" thickness={2} />
+        </HStack>
+      </View>
     );
   }
 
   return (
     <Formik
-      initialValues={{ numOfTables: 0 }}
+      initialValues={{ numOfTables: '', numOfChairs: '' }}
       onSubmit={(values) => console.log(values)}
       validateOnMount
       validationSchema={validationSchema}
     >
       {({ handleChange, handleBlur, values, touched, errors, isValid }) => (
         <Box borderTopRadius={50} marginTop={5} elevation={20} flex={1} backgroundColor="white">
-          <VStack flex={0.2}>
+          <VStack flex={0.3}>
             <HStack alignItems="center" justifyContent="space-around" flex={1}>
-              <Text fontSize="md">Upišite broj stolova u lokalu</Text>
+              <Text fontSize="md">Upišite broj stolica</Text>
               <Input
                 keyboardType="numeric"
-                onChangeText={(text) => {
-                  handleChange('numOfTables');
-                  handleTableChange(text);
-                }}
-                onBlur={handleBlur('numOfTables')}
-                value={values.numOfTables}
+                onBlur={handleBlur('numOfChairs')}
+                onChangeText={handleChange('numOfChairs')}
+                value={values.numOfChairs}
                 variant="underlined"
-                placeholder="Broj stolova"
+                placeholder="Broj stolica"
                 placeholderTextColor="gray.500"
                 fontSize={13}
                 alignSelf="center"
@@ -110,25 +121,61 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
                 maxLength={2}
               />
             </HStack>
+
+            {!errors.numOfChairs && touched.numOfChairs && (
+              <HStack alignItems="center" justifyContent="space-around" flex={1}>
+                <Text flex={1} fontSize="md">
+                  Upišite broj stolova s odabranim brojem mjesta
+                </Text>
+                <Input
+                  keyboardType="numeric"
+                  onBlur={handleBlur('numOfTables')}
+                  onChangeText={handleChange('numOfTables')}
+                  value={values.numOfTables}
+                  variant="underlined"
+                  placeholder="Broj stolova"
+                  placeholderTextColor="gray.500"
+                  fontSize={13}
+                  alignSelf="center"
+                  width="20%"
+                  color="black"
+                  maxLength={2}
+                />
+              </HStack>
+            )}
+            <HStack justifyContent="center">
+              <TouchableOpacity
+                onPress={() => addTable(values.numOfTables, values.numOfChairs)}
+                disabled={!isValid}
+                style={{
+                  flex: 1,
+                  padding: 1,
+                  maxWidth: '30%',
+                  alignItems: 'center',
+                  backgroundColor: isValid ? primary : 'gray',
+                  borderRadius: 10,
+                  alignSelf: 'center',
+                }}
+              >
+                <Text color="white" fontSize="md">
+                  Dodaj
+                </Text>
+              </TouchableOpacity>
+            </HStack>
           </VStack>
-          <VStack flex={0.05} w="100%" alignItems="center" justifyContent="center">
-            {touched.numOfTables && errors.numOfTables && <Text>{errors.numOfTables}</Text>}
+          <VStack flex={0.1} w="100%" alignItems="center" justifyContent="center">
+            {touched.numOfTables && errors.numOfTables && !errors.numOfChairs && (
+              <Text color="red.500">{errors.numOfTables}</Text>
+            )}
+            {touched.numOfChairs && errors.numOfChairs && (
+              <Text color="red.500">{errors.numOfChairs}</Text>
+            )}
+
             <Divider width="70%" my={3} thickness={2} />
           </VStack>
-          <VStack flex={0.6} alignItems="center" justifyContent="center">
-            {selectable && (
-              <>
-                {renderRow(tablesChairs.two.toString(), 'Broj stolova s dvije stolice', 'two')}
-                {renderRow(tablesChairs.three.toString(), 'Broj stolova s tri stolice', 'three')}
-                {renderRow(tablesChairs.four.toString(), 'Broj stolova s četiri stolice', 'four')}
-                {renderRow(tablesChairs.five.toString(), 'Broj stolova s pet stolica', 'five')}
-                {renderRow(
-                  tablesChairs.sixAndMore.toString(),
-                  'Broj stolova s šet ili više stolica',
-                  'sixAndMore'
-                )}
-              </>
-            )}
+          <VStack flex={0.6} alignItems="center" s>
+            {isValid &&
+              selectedArr.map((item, index) => renderRow(item.nChairs, item.nTables, index))}
           </VStack>
           <HStack
             width="100%"
@@ -152,7 +199,7 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
             <TouchableOpacity
               // disabled={!isValid}
 
-              onPress={handleRightArrowPress}
+              onPress={setFormState}
               style={{
                 flex: 1,
                 maxWidth: '30%',
@@ -181,7 +228,7 @@ function Stolovi({ handleRightArrowPress, handleLeftArrowPress }) {
 
 Stolovi.propTypes = {
   handleLeftArrowPress: PropTypes.func.isRequired,
-  handleRightArrowPress: PropTypes.func.isRequired,
+  setFormState: PropTypes.func.isRequired,
 };
 
 export default Stolovi;

@@ -12,8 +12,8 @@ function App() {
     <Provider store={store}>
       <NavigationContainer>
         <NativeBaseProvider>
-          <MainNavigator />
-          {/* <EstablishmentRegistrationForm /> */}
+          {/* <MainNavigator /> */}
+          <EstablishmentRegistrationForm />
         </NativeBaseProvider>
       </NavigationContainer>
     </Provider>

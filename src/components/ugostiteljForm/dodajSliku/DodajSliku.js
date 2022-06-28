@@ -7,10 +7,11 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Footer from '../../Footer';
 import { primary } from '../../../assets/getColors';
 
-function DodajSliku({ handleRightArrowPress, handleLeftArrowPress }) {
+function DodajSliku({ handleRightArrowPress, handleLeftArrowPress, setScreenFour }) {
   const [imagePath, setImagePath] = useState();
 
   const handleImageSelecting = () => {
+    let nameArr = '';
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -18,6 +19,17 @@ function DodajSliku({ handleRightArrowPress, handleLeftArrowPress }) {
       includeBase64: true,
     }).then((image) => {
       setImagePath(image.path);
+      // console.log(image);
+      nameArr = image.path.split('/');
+      // console.log('pero', nameArr[nameArr.length - 1]);
+      setScreenFour([
+        {
+          name: nameArr[nameArr.length - 1],
+          isMain: true,
+          priority: 0,
+          base64: image.data,
+        },
+      ]);
     });
   };
 
@@ -120,6 +132,7 @@ function DodajSliku({ handleRightArrowPress, handleLeftArrowPress }) {
 DodajSliku.propTypes = {
   handleLeftArrowPress: PropTypes.func.isRequired,
   handleRightArrowPress: PropTypes.func.isRequired,
+  setScreenFour: PropTypes.func.isRequired,
 };
 
 export default DodajSliku;

@@ -10,19 +10,28 @@ import OsnovniPodaci from './osnovniPodaci/OsnovniPodaci';
 import RadnoVrijeme from './radnoVrijeme/RadnoVrijeme';
 import DodajSliku from './dodajSliku/DodajSliku';
 import Stolovi from './stolovi/Stolovi';
-import { selectForm, updateFormState } from '../../redux/features/registrationFormSlice';
+// import {
+//   selectForm,
+//   updateFormState,
+//   setOsnovniPodaci,
+//   setRadnoVrijeme,
+//   setSlika,
+//   setStolovi,
+// } from '../../redux/features/registrationFormSlice';
 
 function EstablishmentRegistrationForm() {
-  const formState = useSelector(selectForm);
+  // const formState = useSelector(selectForm);
   const dispatch = useDispatch();
   const ref = useRef(PagerView);
 
   const [currentPosition, setCurrentPosition] = useState(0);
 
   const [screenTwo, setScreenTwo] = useState({}); // lokacija i osnovni podaci objekt
-  const [screenThree, setScreenThree] = useState({}); // radno vrijeme arr objekata
+  const [screenThree, setScreenThree] = useState([]); // radno vrijeme arr objekata
   const [screenFour, setScreenFour] = useState({}); // slika arr objekata
-  const [screenFive, setScreenFive] = useState({}); // stolovi nije definirano
+  const [screenFive, setScreenFive] = useState([]); // stolovi nije definirano
+
+  const [isValid, setIsValid] = useState(false);
 
   const handleLeftArrowPress = () => {
     ref.current.setPage(currentPosition - 1);
@@ -30,14 +39,25 @@ function EstablishmentRegistrationForm() {
   const handleRightArrowPress = () => {
     ref.current.setPage(currentPosition + 1);
   };
-  useEffect(() => {
-    // console.log(screenThree);
-    dispatch(updateFormState(screenTwo));
-    dispatch(updateFormState(screenThree));
-    // if(currentPosition == 3)dispatch(updateFormState(screenFour))
-    // if(currentPosition == 4)dispatch(updateFormState(screenFive))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPosition]);
+
+  const setFormState = () => {
+    const apiObject = {
+      ...screenTwo,
+      workingHours: screenThree,
+      tables: screenFour,
+      images: [screenFour],
+    };
+
+    console.log(apiObject);
+  };
+  // useEffect(() => {
+  //   // console.log(screenThree);
+  //   dispatch(setOsnovniPodaci(screenTwo));
+  //   dispatch(setRadnoVrijeme(screenThree));
+  //   // if(currentPosition == 3)dispatch(updateFormState(screenFour))
+  //   // if(currentPosition == 4)dispatch(updateFormState(screenFive))
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [currentPosition]);
   return (
     <Box flex={1} backgroundColor={backgroundColor}>
       <Box flex={0.2} marginTop={5} justifyContent="center">
@@ -53,6 +73,8 @@ function EstablishmentRegistrationForm() {
           ref={ref}
           onPageSelected={(e) => {
             setCurrentPosition(e.nativeEvent.position);
+            // console.log(e.nativeEvent);
+            setFormState(e.nativeEvent.position - 1);
           }}
           style={{
             flexGrow: 1,
@@ -88,6 +110,7 @@ function EstablishmentRegistrationForm() {
               handleRightArrowPress={handleRightArrowPress}
               handleLeftArrowPress={handleLeftArrowPress}
               setScreenFive={setScreenFive}
+              setFormState={setFormState}
             />
           </View>
         </PagerView>
