@@ -9,6 +9,7 @@ import WelcomeScreenNavigator from './WelcomeScreenNavigator';
 import AppContext from './AppContext';
 import userGet from '../api/userGet';
 import EstablishmentRegistrationForm from '../components/ugostiteljForm/EstablishmentRegistrationForm';
+// import { Text } from 'native-base';
 
 function MainNavigator() {
   const user = useSelector(selectUser);
@@ -26,11 +27,13 @@ function MainNavigator() {
   );
 
   useEffect(() => {
+    // console.log('initializing useEffect');
     const onIdTokenChanged = (userFirebase) => {
       if (!user && userFirebase) {
         userGet({ uid: userFirebase.uid })
           .then((response) => {
-            setUserInfo(response.user);
+            // console.log('Response data u main useEffect', response.data.user);
+            setUserInfo(response.data.user);
           })
           .catch((error) => {
             console.log(error);
@@ -40,7 +43,8 @@ function MainNavigator() {
         auth()
           .currentUser.getIdToken(true)
           .then((idToken) => {
-            updateUserInfo({ jwt: idToken });
+            // console.log('idToken==>', idToken);
+            dispatch(updateUserInfo({ jwt: idToken }));
           })
           .catch((error) => {
             console.log('Error fetching JWT from firebase =>', error);
@@ -56,26 +60,33 @@ function MainNavigator() {
   useEffect(() => {
     if (userInfo) {
       dispatch(login(userInfo));
+      // console.log('userinfo useEffect');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo]);
 
+  // eslint-disable-next-line consistent-return
   const renderNavigator = () => {
     if (user) {
+      // console.log('USER in IF===>', user);
       if (user.accountType === null) {
+        // console.log('accountType null');
         return <ChoiceScreenNavigator />;
       }
-      if (user.accountType === 0) {
+      if (user.accountType == 0) {
+        // console.log('accountType 0');
         return <UserTabNavigator />;
       }
-      if (user.isNewUser && user.accountType === 1) {
+      if (user.isNewUser && user.accountType == 1) {
+        // console.log('accountType 1 && newAcc');
         return <EstablishmentRegistrationForm />;
       }
-      if (user.accountType === 1) {
+      if (user.accountType == 1) {
+        // console.log('accountType 1');
         return <EstablishmentOwnerTabNavigator />;
       }
-    }
-    return <WelcomeScreenNavigator />;
+    } else return <WelcomeScreenNavigator />;
+    // return <Text>Sjebo si</Text>;
   };
 
   if (initializing) return null;

@@ -1,16 +1,22 @@
 import { View, Text, TouchableWithoutFeedback, Keyboard, ScrollView, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Heading } from 'native-base';
+import { Heading, HStack, Spinner } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 import CubeCard from './components/CubeCard';
 import SearchBar from './components/SearchBar';
 import userHomeStyles from './styles/userHomeStyles';
 import ProfilePicture from './components/ProfilePicture';
 import LongCard from './components/LongCard';
+import apiInstance from '../../../axios/apiInstance';
+import { selectUser } from '../../../redux/features/userSlice';
+import { secondary } from '../../../assets/getColors';
 
 const styles = userHomeStyles;
 
 function UserHomeScreen() {
+  const user = useSelector(selectUser);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
   const [apiData, setApiData] = useState();
@@ -19,69 +25,111 @@ function UserHomeScreen() {
     setClicked(false);
     Keyboard.dismiss();
   };
-  useEffect(() => {
-    const getData = async () => {
-      const apiResponse = await fetch(
-        'https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages'
+
+  // eslint-disable-next-line consistent-return
+  const getData = async () => {
+    try {
+      const response = await axios.get(
+        'https://bookingsterapi.oa.r.appspot.com/bookingster/api/establishment',
+        {
+          // headers: `Bearer ${user.jwt}`,
+          headers: { authorization: `Bearer ${user.jwt}` },
+        }
       );
-      const data = await apiResponse.json();
-      setApiData(data);
-    };
-    getData();
+      return response;
+    } catch (error) {
+      console.log(error.errorMessage);
+    }
+  };
+
+  const loadData = async () => {
+    const apiResponse = await getData();
+    console.log('api response==>', apiResponse.data);
+    setApiData(apiResponse.data.establishments);
+  };
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const renderHeading = (bigHeading, smallHeading) => (
+    <View style={styles.HeaderView}>
+      <Heading size="md" fontWeight={500}>
+        {bigHeading}
+      </Heading>
+      <Heading size="sm" fontWeight={400}>
+        {smallHeading}
+      </Heading>
+    </View>
+  );
   return (
     <SafeAreaView style={styles.home__view}>
-      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      {apiData ? (
         <>
-          <ProfilePicture />
-          <SearchBar
-            searchPhrase={searchPhrase}
-            setSearchPhrase={setSearchPhrase}
-            clicked={clicked}
-            setClicked={setClicked}
-          />
-        </>
-      </TouchableWithoutFeedback>
-      <View style={{ flex: 0.8 }}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ display: clicked ? 'none' : 'flex' }}
-        >
           <TouchableWithoutFeedback onPress={dismissKeyboard}>
-            <View style={{ flex: 1 }}>
-              <View style={styles.HeaderView}>
-                <Heading size="md" fontWeight={500}>
-                  Najpopularnija mjesta
-                </Heading>
-                <Heading size="sm" fontWeight={400}>
-                  Mjesta s najviše rezervacija
-                </Heading>
-              </View>
-              <View style={{ marginVertical: 5, flex: 1 }}>
-                <FlatList
-                  nestedScrollEnabled
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  data={apiData}
-                  renderItem={({ item }) => <CubeCard />}
-                  keyExtractor={(item) => item.id}
-                />
-              </View>
+            <>
+              <ProfilePicture />
+              <SearchBar
+                searchPhrase={searchPhrase}
+                setSearchPhrase={setSearchPhrase}
+                clicked={clicked}
+                setClicked={setClicked}
+              />
+            </>
+          </TouchableWithoutFeedback>
+          <View style={{ flex: 0.8 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ display: clicked ? 'none' : 'flex' }}
+            >
+              <TouchableWithoutFeedback onPress={dismissKeyboard}>
+                <View style={{ flex: 1 }}>
+                  <View style={styles.HeaderView}>
+                    <Heading size="md" fontWeight={500}>
+                      Najpopularnija mjesta
+                    </Heading>
+                    <Heading size="sm" fontWeight={400}>
+                      Mjesta s najviše rezervacija
+                    </Heading>
+                  </View>
+                  <View style={{ marginVertical: 5, flex: 1 }}>
+                    <FlatList
+                      nestedScrollEnabled
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      data={apiData}
+                      renderItem={({ item }) => <CubeCard item={item} />}
+                      keyExtractor={(item) => item.oib}
+                    />
+                  </View>
 
-              <View style={styles.HeaderView}>
-                <Heading size="md" fontWeight={500}>
-                  Najnovija mjesta
-                </Heading>
-                <Heading size="sm" fontWeight={400}>
-                  Najnovije dodana mjesta
-                </Heading>
-              </View>
-              <View style={{ flex: 1 }}>
-                <LongCard buttonText="Rezerviraj" />
-              </View>
-            </View>
+                  {/* <View style={styles.HeaderView}>
+                    <Heading size="md" fontWeight={500}>
+                      Najnovija mjesta
+                    </Heading>
+                    <Heading size="sm" fontWeight={400}>
+                      Najnovije dodana mjesta
+                    </Heading>
+                  </View> */}
+                  <SafeAreaView style={{ flex: 1 }}>
+                    <FlatList
+                      ListHeaderComponent={renderHeading(
+                        'Najnovija mjesta',
+                        'Najnovije dodana mjesta'
+                      )}
+                      // eslint-disable-next-line react/jsx-no-useless-fragment
+                      ListFooterComponent={<></>}
+                      nestedScrollEnabled
+                      showsVerticalScrollIndicator={false}
+                      data={apiData}
+                      renderItem={({ item }) => <LongCard buttonText="Rezerviraj" item={item} />}
+                      keyExtractor={(item) => item.oib}
+                    />
+                    {/* <LongCard buttonText="Rezerviraj" /> */}
+                  </SafeAreaView>
+                </View>
 
-            {/* {!apiData ? (
+                {/* {!apiData ? (
               <ActivityIndicator color={primary} style={{flex: 0.8}} size="large" />
               ) : (
                 <List
@@ -90,24 +138,35 @@ function UserHomeScreen() {
                 setClicked={setClicked}
                 />
               )} */}
-          </TouchableWithoutFeedback>
-        </ScrollView>
-        <TouchableWithoutFeedback onPress={dismissKeyboard}>
-          <View
-            style={{
-              flex: 1,
-              height: '100%',
-              zIndex: 99,
-              alignSelf: 'center',
-              alignContent: 'center',
-              justifyContent: 'center',
-              display: clicked ? 'flex' : 'none',
-            }}
-          >
-            <Text>Upišite naziv ili adresu željenog mjesta</Text>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+            <TouchableWithoutFeedback onPress={dismissKeyboard}>
+              <View
+                style={{
+                  flex: 1,
+                  height: '100%',
+                  zIndex: 99,
+                  alignSelf: 'center',
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                  display: clicked ? 'flex' : 'none',
+                }}
+              >
+                <Text>Upišite naziv ili adresu željenog mjesta</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </TouchableWithoutFeedback>
-      </View>
+        </>
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <HStack space={2} justifyContent="center">
+            <Spinner accessibilityLabel="Loading posts" />
+            <Heading color={secondary} fontSize="md">
+              Loading
+            </Heading>
+          </HStack>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

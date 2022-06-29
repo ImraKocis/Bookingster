@@ -7,7 +7,7 @@ import { LoadTestImage } from '../../../../assets/getImages';
 import userHomeStyles from '../styles/userHomeStyles';
 
 const styles = userHomeStyles;
-function LongCard({ buttonText }) {
+function LongCard({ buttonText, item }) {
   const [choiceImg, setChoiceImg] = useState('');
 
   const fetchImg = async () => {
@@ -27,7 +27,7 @@ function LongCard({ buttonText }) {
         <VStack flex={0.6}>
           <Box marginLeft={3} marginTop={3} flex={0.3}>
             <Text fontWeight="bold" fontSize="md">
-              Bistro Pizzeria Ivona
+              {item.name}
             </Text>
           </Box>
           <Box marginLeft={3} flex={0.5}>
@@ -47,7 +47,9 @@ function LongCard({ buttonText }) {
                 flexWrap="wrap"
                 fontSize="xs"
               >
-                Vladimira Nadzora 45, Slatina
+                {item.location.address}
+                {', '}
+                {item.location.city}
               </Text>
             </HStack>
           </Box>
@@ -64,6 +66,7 @@ function LongCard({ buttonText }) {
 
 LongCard.propTypes = {
   buttonText: PropTypes.string.isRequired,
+  item: PropTypes.objectOf.isRequired,
 };
 
 export default LongCard;

@@ -90,10 +90,10 @@ function Login({ setUserInfo, setIsNewUser }) {
           })
         );
       } else {
-        console.log('LOGIN UID:', credential.user);
+        console.log('LOGIN UID:', credential.user.uid);
         userGet(credential.user).then((response) => {
-          console.log('GET_USER_INFO_API', response.user);
-          setUserInfo(response.user);
+          console.log('GET_USER_INFO_API', response.data.user);
+          setUserInfo(response.data.user);
         });
       }
     });

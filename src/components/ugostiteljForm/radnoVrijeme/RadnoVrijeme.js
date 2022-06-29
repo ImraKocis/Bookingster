@@ -2,6 +2,7 @@ import { View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Box, Center, Divider, Heading, HStack, Icon, Text, VStack } from 'native-base';
 import VectorIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
@@ -38,7 +39,7 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
       if (dateType === 'do') {
         setFrom(new Date(time));
         // setShowFrom(false);
-        console.log(from);
+        // console.log(from);
       } else if (dateType === 'od') {
         setTo(new Date(time));
         // setShowTo(false);
@@ -88,14 +89,31 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
         },
       ];
       sortedDays.sort((a, b) => (a.index > b.index ? 1 : -1));
+      arrForApi.sort((a, b) => (a.index > b.index ? 1 : -1));
       setSelectedDays(sortedDays);
       setSelectedDaysApi(arrForApi);
       setScreenThree(arrForApi);
     } else {
       setSelectedDays(selectedDays.filter((item) => item.day !== day));
+      setSelectedDaysApi(selectedDaysApi.filter((item) => item.day !== day));
+      setScreenThree(selectedDaysApi.filter((item) => item.day !== day));
     }
-    console.log(selectedDays);
+    // console.log(selectedDays);
   };
+  const handleDelete = (f, t) => {
+    console.log('setTime', setTime);
+    console.log('delete func', f, t);
+    // console.log('delete');
+
+    // setSetTime(setTime.filter((el) => el.od !== f).filter((el) => el.do !== t));
+
+    // if (selectedDays.some((obj) => obj.od === f && obj.do === t)) {
+    //   setSelectedDays(selectedDays.filter((el) => el.od !== f && el.do !== t));
+    //   setSelectedDaysApi(selectedDaysApi.filter((el) => el.od !== f && el.do !== t));
+    //   setScreenThree(selectedDaysApi.filter((el) => el.od !== f && el.do !== t));
+    // }
+  };
+
   return (
     <Box borderTopRadius={50} marginTop={5} elevation={20} flex={1} backgroundColor="white">
       <Heading flex={0.1} my={3} alignSelf="center" size="md" fontWeight="normal">
@@ -150,13 +168,18 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
         </HStack>
 
         <HStack flex={1} justifyContent="center">
-          <TouchableWithoutFeedback onPress={() => onAddPress(from, to)}>
+          <TouchableWithoutFeedback
+            disabled={setTime.some((obj) => obj.od === from && obj.do === to)}
+            onPress={() => onAddPress(from, to)}
+          >
             <View
               style={{
                 borderRadius: 10,
                 flex: 1,
                 marginHorizontal: '30%',
-                backgroundColor: primary,
+                backgroundColor: !setTime.some((obj) => obj.od === from && obj.do === to)
+                  ? primary
+                  : 'gray',
                 maxHeight: '80%',
                 justifyContent: 'center',
               }}
@@ -175,8 +198,9 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
         {setTime.some((val) => val.od) &&
           setTime.some((val) => val.do) &&
           setTime.map((timeItem, timeIndex) => (
-            <HStack key={timeItem} flex={0.2} alignItems="center" justifyContent="space-between">
-              <HStack mx={1} flex={0.3}>
+            // eslint-disable-next-line react/no-array-index-key
+            <HStack key={timeIndex} flex={0.2} alignItems="center" justifyContent="space-between">
+              <HStack justifyContent="center" flex={0.3}>
                 <Text fontSize="md">
                   {formatTimeString(timeItem.od)} - {formatTimeString(timeItem.do)}
                 </Text>
@@ -184,8 +208,8 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
               <HStack flex={0.7}>
                 {days.map((day, index) => (
                   <TouchableOpacity
-                    key={day}
-                    // disabled={day.daySelected}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
                     onPress={() => {
                       handlePress(day, index, setTime[timeIndex].od, setTime[timeIndex].do);
                     }}
@@ -213,6 +237,14 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
                   </TouchableOpacity>
                 ))}
               </HStack>
+              <View style={{ marginHorizontal: 5 }}>
+                <MaterialIcon
+                  onPress={() => handleDelete(timeItem.od, timeItem.do)}
+                  name="highlight-remove"
+                  size={25}
+                  color={primary}
+                />
+              </View>
             </HStack>
           ))}
         <HStack

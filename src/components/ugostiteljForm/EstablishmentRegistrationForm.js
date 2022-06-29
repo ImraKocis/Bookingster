@@ -44,8 +44,8 @@ function EstablishmentRegistrationForm() {
     const apiObject = {
       ...screenTwo,
       workingHours: screenThree,
-      tables: screenFour,
-      images: [screenFour],
+      images: screenFour,
+      tables: screenFive,
     };
 
     console.log(apiObject);
@@ -110,6 +110,7 @@ function EstablishmentRegistrationForm() {
               handleRightArrowPress={handleRightArrowPress}
               handleLeftArrowPress={handleLeftArrowPress}
               setScreenFive={setScreenFive}
+              screenFive={screenFive}
               setFormState={setFormState}
             />
           </View>

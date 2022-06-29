@@ -4,7 +4,7 @@ import { Box, Text, Heading, HStack, Input, VStack } from 'native-base';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import PropTypes, { nominalTypeHack } from 'prop-types';
+import PropTypes from 'prop-types';
 import Footer from '../../Footer';
 
 const phoneRegExp =
@@ -59,7 +59,7 @@ function OsnovniPodaci({ handleRightArrowPress, handleLeftArrowPress, setScreenT
         adresa: '',
         telefon: '',
       }}
-      innerRef={formRef}
+      // innerRef={formRef}
       validateOnMount
       validationSchema={validationSchema}
     >

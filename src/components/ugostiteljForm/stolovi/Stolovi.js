@@ -22,70 +22,70 @@ const validationSchema = yup.object().shape({
     .required('Obvezan unos broja stolica'),
 });
 
-function Stolovi({ handleLeftArrowPress, setFormState }) {
-  const [selectable, setSelectable] = useState(true);
-  const [numOfSelected, setNumOfSelected] = useState({ numOfSelected: 0 });
+function Stolovi({ handleLeftArrowPress, setFormState, setScreenFive, screenFive }) {
   const [selectedArr, setSelectedArr] = useState([]);
-  const [tablesChairs, setTablesChairs] = useState({
-    two: 0,
-    three: 0,
-    four: 0,
-    five: 0,
-    sixAndMore: 0,
-  });
-  const [tables, setTables] = useState([
-    {
-      index: 'br stola',
-      numOfChairs: 99,
-    },
-  ]);
-  const handleTableChange = (val) => {
-    // handleChange('numOfTables');
-    const arr = [];
-    if (val >= 2 && val <= 99) {
-      // console.log(val);
-      for (let i = 1; i <= val; i += 1) {
-        arr.push({ index: i, numOfSelectableChairs: i });
+
+  const handleStringFormat = (c, t) => {
+    let str = t.toString();
+
+    if (t === 1) {
+      str = `${str} stol`;
+    } else if (t > 1 && t < 5) {
+      str = `${str} stola`;
+    } else if (t.toString().length === 2 && t.toString()[0] !== '1') {
+      if (t.toString()[1] > 0 && t.toString()[1] < 5) {
+        str = `${str} stola`;
       }
-      console.log(arr);
-      setSelectable(arr);
-    }
+    } else str = `${str} stolova`;
+
+    if (c === 1) str = `${str} s ${c.toString()} mjestom`;
+    else str = `${str} s ${c.toString()} mjesta`;
+
+    return str;
   };
 
-  const handleSelectChange = (key, value) => {
-    // console.log(key);
-    setTablesChairs({ ...tablesChairs, [key]: value });
+  const handleDelete = (c) => {
+    console.log('delete');
+
+    // setSelectedArr(screenFive.filter((el) => el.nChairs !== c));
+    setScreenFive(screenFive.filter((el) => el.nChairs !== c));
   };
+
+  // const handleSelectChange = (key, value) => {
+  //   // console.log(key);
+  //   setTablesChairs({ ...tablesChairs, [key]: value });
+  // };
 
   const addTable = (numOfTables, numOfChairs) => {
     const arr = [];
 
     console.log(numOfTables, numOfChairs);
-    if (!arr.some((obj) => obj.nChairs === parseInt(numOfChairs, 10))) {
+    if (!screenFive.some((obj) => obj.nChairs === numOfChairs)) {
+      console.log('if', screenFive);
       arr.push({ nTables: numOfTables, nChairs: numOfChairs });
-      setSelectedArr([...selectedArr, ...arr]);
+      // setSelectedArr([...screenFive, ...arr]);
+      setScreenFive([...screenFive, ...arr]);
     }
   };
 
-  useEffect(() => {
-    setNumOfSelected({
-      numOfSelected: Object.values(tablesChairs).reduce((a, b) => a + b),
-    });
-    // console.log(numOfSelected);
-  }, [tablesChairs]);
+  useEffect(() => {}, []);
 
   function renderRow(c, t, index) {
     const nTables = parseInt(t, 10);
     const nChairs = parseInt(c, 10);
-    console.log(selectedArr);
+    // console.log('Pero', selectedArr);
     return (
       <View key={index}>
         <HStack marginRight={2} justifyContent="center" alignItems="center">
           <Text fontSize="md" mx={10}>
-            {t} {nTables === 1 && 'stol'} {nTables > 1 && nTables < 5 ? 'stola' : 'stolova'} s {c}{' '}
-            {nChairs === 1 ? 'mjestom' : 'mjesta'}
+            {handleStringFormat(nChairs, nTables)}
           </Text>
-          <MaterialIcons name="highlight-remove" size={25} color={primary} />
+          <MaterialIcons
+            onPress={() => handleDelete(c)}
+            name="highlight-remove"
+            size={25}
+            color={primary}
+          />
         </HStack>
         <HStack justifyContent="center">
           <Divider color="black" my={2} width="90%" thickness={2} />
@@ -105,8 +105,11 @@ function Stolovi({ handleLeftArrowPress, setFormState }) {
         <Box borderTopRadius={50} marginTop={5} elevation={20} flex={1} backgroundColor="white">
           <VStack flex={0.3}>
             <HStack alignItems="center" justifyContent="space-around" flex={1}>
-              <Text fontSize="md">Upišite broj stolica</Text>
+              <Text ml={10} flex={1} fontSize="md">
+                Upišite broj mjesta
+              </Text>
               <Input
+                mr={10}
                 keyboardType="numeric"
                 onBlur={handleBlur('numOfChairs')}
                 onChangeText={handleChange('numOfChairs')}
@@ -122,37 +125,40 @@ function Stolovi({ handleLeftArrowPress, setFormState }) {
               />
             </HStack>
 
-            {!errors.numOfChairs && touched.numOfChairs && (
-              <HStack alignItems="center" justifyContent="space-around" flex={1}>
-                <Text flex={1} fontSize="md">
-                  Upišite broj stolova s odabranim brojem mjesta
-                </Text>
-                <Input
-                  keyboardType="numeric"
-                  onBlur={handleBlur('numOfTables')}
-                  onChangeText={handleChange('numOfTables')}
-                  value={values.numOfTables}
-                  variant="underlined"
-                  placeholder="Broj stolova"
-                  placeholderTextColor="gray.500"
-                  fontSize={13}
-                  alignSelf="center"
-                  width="20%"
-                  color="black"
-                  maxLength={2}
-                />
-              </HStack>
-            )}
-            <HStack justifyContent="center">
+            <HStack alignItems="center" justifyContent="space-around" flex={1}>
+              <Text ml={10} flex={1} fontSize="md">
+                Upišite broj stolova s odabranim brojem mjesta
+              </Text>
+              <Input
+                mr={10}
+                keyboardType="numeric"
+                onBlur={handleBlur('numOfTables')}
+                onChangeText={handleChange('numOfTables')}
+                value={values.numOfTables}
+                variant="underlined"
+                placeholder="Broj stolova"
+                placeholderTextColor="gray.500"
+                fontSize={13}
+                alignSelf="center"
+                width="20%"
+                color="black"
+                maxLength={2}
+              />
+            </HStack>
+
+            <HStack mt={5} justifyContent="center">
               <TouchableOpacity
                 onPress={() => addTable(values.numOfTables, values.numOfChairs)}
-                disabled={!isValid}
+                disabled={!isValid && screenFive.some((obj) => obj.nChairs === values.numOfChairs)}
                 style={{
                   flex: 1,
                   padding: 1,
                   maxWidth: '30%',
                   alignItems: 'center',
-                  backgroundColor: isValid ? primary : 'gray',
+                  backgroundColor:
+                    isValid && !screenFive.some((obj) => obj.nChairs === values.numOfChairs)
+                      ? primary
+                      : 'gray',
                   borderRadius: 10,
                   alignSelf: 'center',
                 }}
@@ -173,9 +179,8 @@ function Stolovi({ handleLeftArrowPress, setFormState }) {
 
             <Divider width="70%" my={3} thickness={2} />
           </VStack>
-          <VStack flex={0.6} alignItems="center" s>
-            {isValid &&
-              selectedArr.map((item, index) => renderRow(item.nChairs, item.nTables, index))}
+          <VStack flex={0.6} alignItems="center">
+            {screenFive.map((item, index) => renderRow(item.nChairs, item.nTables, index))}
           </VStack>
           <HStack
             width="100%"
@@ -229,6 +234,9 @@ function Stolovi({ handleLeftArrowPress, setFormState }) {
 Stolovi.propTypes = {
   handleLeftArrowPress: PropTypes.func.isRequired,
   setFormState: PropTypes.func.isRequired,
+  setScreenFive: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  screenFive: PropTypes.array.isRequired,
 };
 
 export default Stolovi;

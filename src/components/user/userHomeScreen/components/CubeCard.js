@@ -2,11 +2,12 @@ import { Image, TouchableWithoutFeedback } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Box, Text, Center, Icon, VStack } from 'native-base';
 import IconVector from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
 import { LoadTestImage } from '../../../../assets/getImages';
 import userHomeStyles from '../styles/userHomeStyles';
 
 const styles = userHomeStyles;
-function CubeCard() {
+function CubeCard({ item }) {
   const [choiceImg, setChoiceImg] = useState('');
 
   const fetchImg = async () => {
@@ -24,8 +25,8 @@ function CubeCard() {
           <Image alt="Naziv objekta" style={styles.image} source={{ uri: choiceImg }} />
         </Center>
         <Box marginLeft={3} marginTop={1} flex={0.1}>
-          <Text fontWeight="bold" fontSize={14}>
-            Naziv objekta
+          <Text flex={1} mx={2} flexWrap="wrap" fontWeight="bold" fontSize={14}>
+            {item.name}
           </Text>
         </Box>
         <Box flexDirection="row" marginLeft={3} flex={0.3}>
@@ -45,7 +46,9 @@ function CubeCard() {
             flexWrap="wrap"
             fontSize="xs"
           >
-            Vladimira Nadzora 45, Slatina
+            {item.location.address}
+            {', '}
+            {item.location.city}
           </Text>
           {/* </HStack> */}
         </Box>
@@ -53,5 +56,10 @@ function CubeCard() {
     </TouchableWithoutFeedback>
   );
 }
+
+CubeCard.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  item: PropTypes.object.isRequired,
+};
 
 export default CubeCard;
