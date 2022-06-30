@@ -1,35 +1,44 @@
-import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
-import auth from '@react-native-firebase/auth';
-import { useDispatch } from 'react-redux';
+import Icons from 'react-native-vector-icons/Ionicons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import loginStyle from '../components/login/loginStyle';
-import { logout } from '../redux/features/userSlice';
+import { primary } from '../assets/getColors';
+import EstablishmentOwnerHomeScreen from '../components/establishmentOwner/EstablishmentOwnerHomeScreen';
 
-const styles = loginStyle;
+const Tab = createBottomTabNavigator();
 
 function EstablishmentOwnerTabNavigator() {
-  const dispatch = useDispatch();
-  const LogoutUser = () => {
-    dispatch(logout());
-    auth().signOut();
+  const renderIcon = (focused, color, route, size) => {
+    let iconName;
+    if (route.name === 'Početna') {
+      iconName = focused ? 'ios-home' : 'ios-home-outline';
+    } else if (route.name === 'Rezervacije') {
+      iconName = focused ? 'bookmark' : 'bookmark-outline';
+    } else if (route.name === 'Objekti') {
+      iconName = focused ? 'restaurant' : 'restaurant-outline';
+    } else if (route.name === 'Račun') {
+      iconName = focused ? 'person' : 'person-outline';
+    }
+
+    return <Icons name={iconName} size={size} color={color} />;
   };
+
   return (
-    <View>
-      <Text>EstablishmentOwnerTabNavigator</Text>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ textAlign: 'center', marginBottom: 15 }}>user</Text>
-        <TouchableOpacity onPress={LogoutUser} style={styles.button}>
-          <Text style={styles.buttonText}>Odjava</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: { elevation: 6, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+        tabBarHideOnKeyboard: true,
+        tabBarIcon: ({ focused, color, size }) => renderIcon(focused, color, route, size),
+        tabBarActiveTintColor: primary,
+        tabBarInactiveTintColor: 'black',
+      })}
+    >
+      <Tab.Screen name="Početna" component={EstablishmentOwnerHomeScreen} />
+      <Tab.Screen name="Rezervacije" component={EstablishmentOwnerHomeScreen} />
+      <Tab.Screen name="Objekti" component={EstablishmentOwnerHomeScreen} />
+      <Tab.Screen name="Račun" component={EstablishmentOwnerHomeScreen} />
+    </Tab.Navigator>
   );
 }
 

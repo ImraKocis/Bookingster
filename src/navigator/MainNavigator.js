@@ -73,15 +73,15 @@ function MainNavigator() {
         // console.log('accountType null');
         return <ChoiceScreenNavigator />;
       }
-      if (user.accountType == 0) {
+      if (user.accountType === 0) {
         // console.log('accountType 0');
         return <UserTabNavigator />;
       }
-      if (user.isNewUser && user.accountType == 1) {
+      if (user.isNewUser && user.accountType === 1) {
         // console.log('accountType 1 && newAcc');
         return <EstablishmentRegistrationForm />;
       }
-      if (user.accountType == 1) {
+      if (user.accountType === 1) {
         // console.log('accountType 1');
         return <EstablishmentOwnerTabNavigator />;
       }

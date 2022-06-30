@@ -12,6 +12,7 @@ import LongCard from './components/LongCard';
 import apiInstance from '../../../axios/apiInstance';
 import { selectUser } from '../../../redux/features/userSlice';
 import { secondary } from '../../../assets/getColors';
+import KeyBoardAvoidingViewWrapper from '../../keyboardAvoidingViewWrapper/KeyboardAvoidingViewWrapper';
 
 const styles = userHomeStyles;
 
@@ -22,6 +23,7 @@ function UserHomeScreen() {
   const [apiData, setApiData] = useState();
 
   const dismissKeyboard = () => {
+    console.log('dismiss');
     setClicked(false);
     Keyboard.dismiss();
   };
@@ -49,6 +51,19 @@ function UserHomeScreen() {
   };
   useEffect(() => {
     loadData();
+
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setClicked(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setClicked(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,7 +82,7 @@ function UserHomeScreen() {
       {apiData ? (
         <>
           <TouchableWithoutFeedback onPress={dismissKeyboard}>
-            <>
+            <View style={{ justifyContent: 'space-around', flex: 0.2 }}>
               <ProfilePicture />
               <SearchBar
                 searchPhrase={searchPhrase}
@@ -75,7 +90,7 @@ function UserHomeScreen() {
                 clicked={clicked}
                 setClicked={setClicked}
               />
-            </>
+            </View>
           </TouchableWithoutFeedback>
           <View style={{ flex: 0.8 }}>
             <ScrollView
@@ -103,26 +118,27 @@ function UserHomeScreen() {
                     />
                   </View>
 
-                  {/* <View style={styles.HeaderView}>
+                  <View style={styles.HeaderView}>
                     <Heading size="md" fontWeight={500}>
                       Najnovija mjesta
                     </Heading>
                     <Heading size="sm" fontWeight={400}>
                       Najnovije dodana mjesta
                     </Heading>
-                  </View> */}
+                  </View>
                   <SafeAreaView style={{ flex: 1 }}>
                     <FlatList
-                      ListHeaderComponent={renderHeading(
-                        'Najnovija mjesta',
-                        'Najnovije dodana mjesta'
-                      )}
+                      // ListHeaderComponent={renderHeading(
+                      //   'Najnovija mjesta',
+                      //   'Najnovije dodana mjesta'
+                      // )}
                       // eslint-disable-next-line react/jsx-no-useless-fragment
-                      ListFooterComponent={<></>}
+                      // ListFooterComponent={<></>}
                       nestedScrollEnabled
+                      horizontal
                       showsVerticalScrollIndicator={false}
                       data={apiData}
-                      renderItem={({ item }) => <LongCard buttonText="Rezerviraj" item={item} />}
+                      renderItem={({ item }) => <CubeCard item={item} />}
                       keyExtractor={(item) => item.oib}
                     />
                     {/* <LongCard buttonText="Rezerviraj" /> */}
@@ -141,24 +157,57 @@ function UserHomeScreen() {
               </TouchableWithoutFeedback>
             </ScrollView>
             <TouchableWithoutFeedback onPress={dismissKeyboard}>
-              <View
+              {/* <View
                 style={{
-                  flex: 1,
-                  height: '100%',
-                  zIndex: 99,
+                  flex: 0.8,
+                  // height: '100%',
+                  // zIndex: 99,
+                  backgroundColor: 'red',
                   alignSelf: 'center',
                   alignContent: 'center',
                   justifyContent: 'center',
                   display: clicked ? 'flex' : 'none',
                 }}
-              >
-                <Text>Upišite naziv ili adresu željenog mjesta</Text>
-              </View>
+              > */}
+              <FlatList
+                style={{ marginTop: '15%', display: clicked ? 'flex' : 'none' }}
+                showsVerticalScrollIndicator={false}
+                data={apiData}
+                renderItem={({ item }) => (
+                  <>
+                    <LongCard buttonText="Rezerviraj" item={item} />
+                    <LongCard buttonText="Rezerviraj" item={item} />
+                  </>
+                )}
+                keyExtractor={(item) => item.oib}
+              />
+              {/* <Text>Upišite naziv ili adresu željenog mjesta</Text> */}
+              {/* </View> */}
             </TouchableWithoutFeedback>
+            {/* <FlatList
+              // ListHeaderComponent={renderHeading(
+              //   'Najnovija mjesta',
+              //   'Najnovije dodana mjesta'
+              // )}
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              // ListFooterComponent={<></>}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
+              data={apiData}
+              renderItem={({ item }) => <LongCard buttonText="Rezerviraj" item={item} />}
+              keyExtractor={(item) => item.oib}
+            /> */}
           </View>
         </>
       ) : (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            flex: 1,
+
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <HStack space={2} justifyContent="center">
             <Spinner accessibilityLabel="Loading posts" />
             <Heading color={secondary} fontSize="md">

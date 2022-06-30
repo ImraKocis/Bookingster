@@ -18,7 +18,7 @@ const userHomeStyles = StyleSheet.create({
   CardView: {
     flex: 1,
     backgroundColor: 'white',
-    elevation: 10,
+    elevation: 6,
     borderRadius: 20,
     maxWidth: 175,
     minHeight: 185,
@@ -28,7 +28,7 @@ const userHomeStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'white',
-    elevation: 10,
+    elevation: 6,
     borderRadius: 20,
     maxHeight: 150,
 
@@ -54,7 +54,7 @@ const userHomeStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchBar__container: {
-    flex: 0.1,
+    flex: 0.4,
     marginTop: 10,
     marginBottom: 5,
     justifyContent: 'flex-start',
@@ -119,9 +119,10 @@ const userHomeStyles = StyleSheet.create({
     marginLeft: '10%',
   },
   profile__view: {
-    flex: 0.1,
+    flex: 0.6,
     flexDirection: 'row',
     marginTop: 20,
+    marginBottom: 10,
   },
   profile__imageView: {
     alignItems: 'center',

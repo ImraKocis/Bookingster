@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import Footer from '../../Footer';
+import KeyboardAvoidingViewWrapper from '../../keyboardAvoidingViewWrapper/KeyboardAvoidingViewWrapper';
 
 const phoneRegExp =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;

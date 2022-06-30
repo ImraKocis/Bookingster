@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import signUpStyle from './signUpStyle';
+import signUpStyle from './signupStyle';
 import { LoadSignUpImg } from '../../assets/getImages';
 import { fetchGoogleKey, selectorGoogle } from '../../redux/features/googleSlice';
 import { selectUser } from '../../redux/features/userSlice';

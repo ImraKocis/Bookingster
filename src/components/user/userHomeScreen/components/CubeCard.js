@@ -22,7 +22,11 @@ function CubeCard({ item }) {
     <TouchableWithoutFeedback onPress={() => console.log('Card pressed')}>
       <VStack style={styles.CardView} flex={1} borderTopRadius={20}>
         <Center marginTop={2} alignSelf="center" justifyContent="center" flex={0.6}>
-          <Image alt="Naziv objekta" style={styles.image} source={{ uri: choiceImg }} />
+          <Image
+            alt="Naziv objekta"
+            style={styles.image}
+            source={{ uri: item.images[0].imageUrl }}
+          />
         </Center>
         <Box marginLeft={3} marginTop={1} flex={0.1}>
           <Text flex={1} mx={2} flexWrap="wrap" fontWeight="bold" fontSize={14}>

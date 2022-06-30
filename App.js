@@ -6,14 +6,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import store from './src/redux/store';
 import MainNavigator from './src/navigator/MainNavigator';
 import EstablishmentRegistrationForm from './src/components/ugostiteljForm/EstablishmentRegistrationForm';
+import EstablishmentOwnerTabNavigator from './src/navigator/EstablishmentOwnerTabNavigator';
 
 function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <NativeBaseProvider>
-          <MainNavigator />
-          {/* <EstablishmentRegistrationForm /> */}
+          {/* <MainNavigator /> */}
+          <EstablishmentRegistrationForm />
+          {/* <EstablishmentOwnerTabNavigator /> */}
         </NativeBaseProvider>
       </NavigationContainer>
     </Provider>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Heading, Image, Input, Icon, HStack, FormControl, Text } from 'native-base';
 import IconVector from 'react-native-vector-icons/MaterialIcons';
+import PropTypes from 'prop-types';
 import { selectUser } from '../../../../redux/features/userSlice';
 import userProfileStyles from '../styles/userProfileStyles';
 import { primary } from '../../../../assets/getColors';
@@ -14,8 +15,21 @@ function UserDetails() {
   const [name, setName] = useState(user.name); // ime iz reduxa
   const [lastName, setLastName] = useState(user.lastname); // prezime iz reduxa
   const [isChanged, setIsChanged] = useState(false); // da li je ime ili prezime promenjeno
+
+  const handleUpdateBtnPress = () => {
+    console.log('btn press');
+  };
   return (
-    <View style={styles.userDetails__mainView}>
+    <View
+      style={{
+        flex: 1,
+        // maxHeight: '45%',
+        backgroundColor: 'white',
+        elevation: 10,
+        borderRadius: 15,
+        marginHorizontal: 20,
+      }}
+    >
       <Heading marginLeft="2%" marginTop="2%" size="md" fontWeight={400}>
         Osobni Podaci
       </Heading>
@@ -27,7 +41,7 @@ function UserDetails() {
             uri: user.photoURL,
           }}
         />
-        <Text color="gray.500">Kliknite za promjenu slike</Text>
+        {/* <Text color="gray.500">Kliknite za promjenu slike</Text> */}
       </View>
       <View style={styles.userDetails__formView}>
         <HStack flex={1} justifyContent="space-between">
@@ -47,13 +61,10 @@ function UserDetails() {
               }
               placeholder="Ime"
               value={name}
-              // onChangeText={text => setIme(text)}
-              // value={ime}
+              onChangeText={(text) => setName(text)}
+              // onFocus={() => setClicked(true)}
+              // onBlur={() => setClicked(false)}
             />
-            {/* <FormControl.ErrorMessage
-                      leftIcon={<WarningOutlineIcon size="xs" />}>
-                      {validationError.ime}
-                    </FormControl.ErrorMessage> */}
           </FormControl>
           <FormControl flex={0.45}>
             <Input
@@ -61,29 +72,31 @@ function UserDetails() {
               fontSize="md"
               color="black"
               value={lastName}
-              // onChangeText={value => setPrezime(value)}
-              // value={prezime}
+              onChangeText={(value) => setLastName(value)}
+              // onFocus={() => setClicked(true)}
+              // onBlur={() => setClicked(false)}
               placeholder="Prezime"
             />
           </FormControl>
         </HStack>
       </View>
-      <HStack justifyContent="space-around" alignItems="center" flex={0.7}>
+      <HStack justifyContent="space-around" alignItems="center" flex={0.4}>
         <TouchableOpacity style={styles.userDetails__formButton}>
           <Text color="white" textAlign="center" fontSize="sm" fontWeight="bold">
             Promjeni lozinku
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          disabled={!isChanged}
+          disabled={() => `${user.name} ${user.lastname}` !== `${name} ${lastName}`}
           style={{
             flex: 1,
-            marginVertical: '2%',
+            marginVertical: '5%',
             marginHorizontal: '15%',
             borderRadius: 10,
-            height: '80%',
+            height: '70%',
             minWidth: '35%',
-            backgroundColor: isChanged ? primary : 'gray',
+            backgroundColor:
+              `${user.name} ${user.lastname}` !== `${name} ${lastName}` ? primary : 'gray',
             alignItems: 'center',
             justifyContent: 'center',
           }}
@@ -96,5 +109,9 @@ function UserDetails() {
     </View>
   );
 }
+
+// UserDetails.propTypes = {
+//   setClicked: PropTypes.func.isRequired,
+// };
 
 export default UserDetails;

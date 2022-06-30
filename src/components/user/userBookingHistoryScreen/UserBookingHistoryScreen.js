@@ -10,8 +10,8 @@ function UserBookingHistoryScreen() {
   return (
     <View style={styles.screenContainer}>
       <TopHeader headerText="Vaše rezervacije" />
-      <LongCard buttonText="Provjeri" />
-      <LongCard buttonText="Provjeri" />
+      {/* <LongCard buttonText="Provjeri" />
+      <LongCard buttonText="Provjeri" /> */}
     </View>
   );
 }

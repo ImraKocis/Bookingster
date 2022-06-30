@@ -14,7 +14,7 @@ function DodajSliku({ handleRightArrowPress, handleLeftArrowPress, setScreenFour
     let nameArr = '';
     ImagePicker.openPicker({
       width: 300,
-      height: 400,
+      height: 200,
       cropping: true,
       includeBase64: true,
     }).then((image) => {

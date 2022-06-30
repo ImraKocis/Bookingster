@@ -33,8 +33,9 @@ function Hint({ handleRightArrowPress }) {
           <Text textAlign="center" fontSize="md" color="gray.700">
             Iduća polja je obvezno pažljivo popuniti radi ispravnosti rada aplikacije
           </Text>
+
           <Text textAlign="center" fontSize="md" color="gray.700">
-            Služite se strelicama za navođenje. Na kraju kliknite &quotPotvrdi&quot
+            Služite se strelicama za navođenje. Na kraju kliknite Potvrdi
           </Text>
         </Box>
         <Box flex={0.2}>

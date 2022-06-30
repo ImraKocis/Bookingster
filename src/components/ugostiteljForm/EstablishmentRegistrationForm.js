@@ -1,8 +1,10 @@
-import { View, Platform } from 'react-native';
+import { View, Platform, Keyboard, Alert } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import PagerView from 'react-native-pager-view';
 import { Box, KeyboardAvoidingView } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import { ADMIN_TOKEN } from 'react-native-dotenv';
 import { backgroundColor } from '../../assets/getColors';
 import CustomStepIndicator from './stepIndicator/CustomStepIndicator';
 import Hint from './hint/Hint';
@@ -10,6 +12,7 @@ import OsnovniPodaci from './osnovniPodaci/OsnovniPodaci';
 import RadnoVrijeme from './radnoVrijeme/RadnoVrijeme';
 import DodajSliku from './dodajSliku/DodajSliku';
 import Stolovi from './stolovi/Stolovi';
+import { selectUser } from '../../redux/features/userSlice';
 // import {
 //   selectForm,
 //   updateFormState,
@@ -21,6 +24,7 @@ import Stolovi from './stolovi/Stolovi';
 
 function EstablishmentRegistrationForm() {
   // const formState = useSelector(selectForm);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const ref = useRef(PagerView);
 
@@ -28,11 +32,11 @@ function EstablishmentRegistrationForm() {
 
   const [screenTwo, setScreenTwo] = useState({}); // lokacija i osnovni podaci objekt
   const [screenThree, setScreenThree] = useState([]); // radno vrijeme arr objekata
-  const [screenFour, setScreenFour] = useState({}); // slika arr objekata
+  const [screenFour, setScreenFour] = useState([]); // slika arr objekata
   const [screenFive, setScreenFive] = useState([]); // stolovi nije definirano
 
-  const [isValid, setIsValid] = useState(false);
-
+  const [error, setError] = useState(null);
+  const [clicked, setClicked] = useState(false);
   const handleLeftArrowPress = () => {
     ref.current.setPage(currentPosition - 1);
   };
@@ -40,7 +44,27 @@ function EstablishmentRegistrationForm() {
     ref.current.setPage(currentPosition + 1);
   };
 
-  const setFormState = () => {
+  const postEstablishment = async (apiObj) => {
+    const res = await axios
+      .post('https://bookingsterapi.oa.r.appspot.com/bookingster/api/establishment', apiObj, {
+        headers: { authorization: `Bearer ${ADMIN_TOKEN}` },
+      })
+      .then((response) => response.data.establishment)
+      .catch((err) => {
+        setError(err.response.data.errorMessage);
+      });
+    // return res.data.establishment;
+
+    return res;
+  };
+
+  // const loadData = async () => {
+  //   const apiResponse = await postEstablishment();
+  //   console.log('api response==>', apiResponse.data);
+  //   setApiData(apiResponse.data.establishments);
+  // };
+
+  const setFormState = async () => {
     const apiObject = {
       ...screenTwo,
       workingHours: screenThree,
@@ -48,19 +72,29 @@ function EstablishmentRegistrationForm() {
       tables: screenFive,
     };
 
-    console.log(apiObject);
+    console.log('Api Post Response==>', await postEstablishment(apiObject));
+
+    // console.log(apiObject);
   };
-  // useEffect(() => {
-  //   // console.log(screenThree);
-  //   dispatch(setOsnovniPodaci(screenTwo));
-  //   dispatch(setRadnoVrijeme(screenThree));
-  //   // if(currentPosition == 3)dispatch(updateFormState(screenFour))
-  //   // if(currentPosition == 4)dispatch(updateFormState(screenFive))
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [currentPosition]);
+
+  // alert func
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setClicked(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setClicked(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
   return (
     <Box flex={1} backgroundColor={backgroundColor}>
-      <Box flex={0.2} marginTop={5} justifyContent="center">
+      <Box display={clicked ? 'none' : 'flex'} flex={0.2} marginTop={5} justifyContent="center">
         <CustomStepIndicator PagerView={ref} currentPosition={currentPosition} />
       </Box>
       <KeyboardAvoidingView
@@ -74,7 +108,7 @@ function EstablishmentRegistrationForm() {
           onPageSelected={(e) => {
             setCurrentPosition(e.nativeEvent.position);
             // console.log(e.nativeEvent);
-            setFormState(e.nativeEvent.position - 1);
+            // setFormState(e.nativeEvent.position - 1);
           }}
           style={{
             flexGrow: 1,

@@ -5,6 +5,7 @@ const userBookingHistoryStyles = StyleSheet.create({
   topHeader__View: {
     flex: 1,
     flexDirection: 'row',
+    minHeight: 70,
     maxHeight: 70,
     backgroundColor: primary,
     borderBottomEndRadius: 15,
