@@ -1,16 +1,21 @@
 import React from 'react';
 import Icons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image, Text } from 'native-base';
+import { useSelector } from 'react-redux';
 import loginStyle from '../components/login/loginStyle';
-import { primary } from '../assets/getColors';
+import { neutral, primary, secondary } from '../assets/getColors';
 import EstablishmentOwnerHomeScreen from '../components/establishmentOwner/EstablishmentOwnerHomeScreen';
 import RezervacijeScreen from '../components/establishmentOwner/rezervacijeScreen/RezervacijeScreen';
 import ObjektiScreen from '../components/establishmentOwner/objekti/ObjektiScreen';
 import UserProfileScreen from '../components/user/userProfileScreen/UserProfileScreen';
+import { selectUser } from '../redux/features/userSlice';
 
 const Tab = createBottomTabNavigator();
 
 function EstablishmentOwnerTabNavigator() {
+  const user = useSelector(selectUser);
+
   const renderIcon = (focused, color, route, size) => {
     let iconName;
     if (route.name === 'Početna') {
@@ -20,7 +25,18 @@ function EstablishmentOwnerTabNavigator() {
     } else if (route.name === 'Objekti') {
       iconName = focused ? 'restaurant' : 'restaurant-outline';
     } else if (route.name === 'Račun') {
-      iconName = focused ? 'person' : 'person-outline';
+      return (
+        <Image
+          w={7}
+          h={7}
+          alt="UserProfileImage"
+          borderRadius={30}
+          borderWidth={2}
+          borderColor={focused ? primary : neutral}
+          source={{ uri: user.photoURL }}
+        />
+      );
+      // iconName = focused ? 'person' : 'person-outline';
     }
 
     return <Icons name={iconName} size={size} color={color} />;
@@ -31,6 +47,7 @@ function EstablishmentOwnerTabNavigator() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: { elevation: 6, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+        tabBarLabelStyle: { fontSize: 12 },
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused, color, size, number }) => renderIcon(focused, color, route, size),
         tabBarActiveTintColor: primary,

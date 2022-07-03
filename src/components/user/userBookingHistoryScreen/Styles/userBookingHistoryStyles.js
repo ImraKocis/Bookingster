@@ -11,7 +11,15 @@ const userBookingHistoryStyles = StyleSheet.create({
     borderBottomEndRadius: 15,
     borderBottomStartRadius: 15,
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 0,
+  },
+  topNavHeader__View: {
+    flex: 1,
+    flexDirection: 'row',
+    minHeight: 60,
+    maxHeight: 60,
+    backgroundColor: primary,
+    alignItems: 'center',
   },
   screenContainer: {
     flex: 1,

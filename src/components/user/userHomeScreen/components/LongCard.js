@@ -22,7 +22,11 @@ function LongCard({ buttonText, item }) {
     <TouchableWithoutFeedback onPress={() => console.log('LongCard pressed')}>
       <HStack style={styles.LongCardView}>
         <Center alignContent="center" flex={0.4} backgroundColor="transparent">
-          <Image alt="Naziv objekta" style={styles.image__long} source={{ uri: choiceImg }} />
+          <Image
+            alt="Naziv objekta"
+            style={styles.image__long}
+            source={{ uri: item.images[0].imageUrl }}
+          />
         </Center>
         <VStack flex={0.6}>
           <Box marginLeft={3} marginTop={3} flex={0.3}>
@@ -67,7 +71,8 @@ function LongCard({ buttonText, item }) {
 
 LongCard.propTypes = {
   buttonText: PropTypes.string.isRequired,
-  item: PropTypes.objectOf.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  item: PropTypes.object.isRequired,
 };
 
 export default LongCard;

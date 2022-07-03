@@ -1,15 +1,21 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icons from 'react-native-vector-icons/Ionicons';
+import { Image } from 'native-base';
+import { useSelector } from 'react-redux';
 import UserHomeScreen from '../components/user/userHomeScreen/UserHomeScreen';
-import { primary } from '../assets/getColors';
+import { neutral, primary } from '../assets/getColors';
 import UserBookingHistoryScreen from '../components/user/userBookingHistoryScreen/UserBookingHistoryScreen';
 import UserProfileScreen from '../components/user/userProfileScreen/UserProfileScreen';
 import UserHomeStackScreenNavigator from './UserHomeStackScreenNavigator';
+import UserReservationsTopTabNavigator from './UserReservationsTopTabNavigator';
+import { selectUser } from '../redux/features/userSlice';
 
 const Tab = createBottomTabNavigator();
 
 function UserTabNavigator() {
+  const user = useSelector(selectUser);
+
   const renderIcon = (focused, color, route, size) => {
     let iconName;
     if (route.name === 'Početna') {
@@ -17,7 +23,18 @@ function UserTabNavigator() {
     } else if (route.name === 'Rezervacije') {
       iconName = focused ? 'bookmark' : 'bookmark-outline';
     } else if (route.name === 'Račun') {
-      iconName = focused ? 'person' : 'person-outline';
+      return (
+        <Image
+          w={7}
+          h={7}
+          alt="UserProfileImage"
+          borderRadius={30}
+          borderWidth={2}
+          borderColor={focused ? primary : neutral}
+          source={{ uri: user.photoURL }}
+        />
+      );
+      // iconName = focused ? 'person' : 'person-outline';
     }
     return <Icons name={iconName} size={size} color={color} />;
   };
@@ -34,7 +51,7 @@ function UserTabNavigator() {
       })}
     >
       <Tab.Screen name="Početna" component={UserHomeStackScreenNavigator} />
-      <Tab.Screen name="Rezervacije" component={UserBookingHistoryScreen} />
+      <Tab.Screen name="Rezervacije" component={UserReservationsTopTabNavigator} />
       <Tab.Screen name="Račun" component={UserProfileScreen} />
     </Tab.Navigator>
   );

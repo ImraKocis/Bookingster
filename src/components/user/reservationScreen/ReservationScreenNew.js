@@ -50,9 +50,7 @@ function ReservationScreenNew({ navigation, route }) {
       .post('https://bookingsterapi.oa.r.appspot.com/bookingster/api/reservation', obj, {
         headers: { authorization: `Bearer ${user.jwt}` },
       })
-      .then((response) => {
-        console.log(response.data);
-      })
+      .then((response) => response.data)
       .catch((error) => {
         Alert.alert('Upozorenje', error.response.data.errorMessage, [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -71,7 +69,7 @@ function ReservationScreenNew({ navigation, route }) {
       reservedFrom: {
         year: fromDate.getFullYear(),
         month: fromDate.getMonth(),
-        day: fromDate.getDay(),
+        day: fromDate.getDate(),
         hours: from.getHours(),
         minutes: from.getMinutes(),
       },

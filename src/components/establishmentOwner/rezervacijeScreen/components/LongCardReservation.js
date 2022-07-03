@@ -2,23 +2,70 @@ import axios from 'axios';
 import { View, Text, HStack, VStack, Heading } from 'native-base';
 import React from 'react';
 import VectorIcon from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { primary, secondary } from '../../../../assets/getColors';
+import {
+  formatDateString,
+  formatTimeString,
+  formatForLongCardReservation,
+} from '../../../../utils/dateTimeFunctions';
+import { selectUser } from '../../../../redux/features/userSlice';
+import {
+  selectEstablishment,
+  updateEstablishmentState,
+} from '../../../../redux/features/establishmentSlice';
 
-const instance = axios.create({
-  url: 'https://bookingsterapi.oa.r.appspot.com/bookingster/api/',
-  timeout: 1000,
-  headers: { authorization: `Bearer user.jwt` },
-});
+// const instance = axios.create({
+//   url: 'https://bookingsterapi.oa.r.appspot.com/bookingster/api/reservation/status',
+//   timeout: 1000,
+//   headers: { authorization: `Bearer user.jwt` },
+// });
 
-function LongCardReservation() {
-  const handleBtnPress = (status) => {
-    // post na api sa stausom
-    if (status === 1) {
-      console.log('odobreno');
-    } else if (status === 2) {
-      console.log('odbijeno');
-    }
+function LongCardReservation({ item, handleApiCall }) {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  const handleApiPatch = async (status) => {
+    const res = await axios
+      .patch(
+        `https://bookingsterapi.oa.r.appspot.com/bookingster/api/reservation/status?newStatus=${status}&reservationId=${item.id}&establishmentOIB=${item.establishmentOIB}`,
+        null,
+        { headers: { authorization: `Bearer ${user.jwt}` } }
+      )
+      .then((response) => response.data.success)
+      .catch((err) => console.log(err.response.data.errorMessage));
+
+    return res;
   };
+
+  const apiCall = async () => {
+    const res = await axios
+      .get(
+        `https://bookingsterapi.oa.r.appspot.com/bookingster/api/establishment/owner?UID=${user.UID}`,
+        { headers: { authorization: `Bearer ${user.jwt}` } }
+      )
+      .then((response) => response.data.establishments)
+      .catch((err) => {
+        console.log('API ERROR==>', err.response.data.errorMessage);
+      });
+
+    return res;
+  };
+
+  const handleBtnPress = async (status) => {
+    // console.log(item.id);
+    // console.log(item.establishmentOIB);
+
+    const res = await handleApiPatch(status);
+    const apiCallRes = await apiCall();
+    handleApiCall();
+    dispatch(updateEstablishmentState(apiCallRes));
+    console.log(apiCallRes);
+    console.log(res);
+    // return res;
+  };
+
   return (
     <HStack
       backgroundColor="white"
@@ -35,9 +82,12 @@ function LongCardReservation() {
         <HStack alignItems="center" mt={1} ml={3} flex={1}>
           <VectorIcon style={{ marginRight: 5 }} name="person-outline" color="black" size={25} />
           <Heading fontWeight="bold" size="lg">
-            Ime Prezime
+            {item.nameOnReservation}
           </Heading>
         </HStack>
+        {/* <HStack>
+          <Text>{item.}</Text>
+        </HStack> */}
 
         <VStack mt={2} ml={3} flex={1}>
           <HStack flex={0.5}>
@@ -47,11 +97,13 @@ function LongCardReservation() {
               color="black"
               size={25}
             />
-            <Text fontSize="lg">Dolazak: 2.7. u 20:00</Text>
+            <Text fontSize="lg">{`Dolazak: ${formatForLongCardReservation(
+              new Date(item.reservedFrom)
+            )}`}</Text>
           </HStack>
           <HStack flex={0.5}>
             <VectorIcon style={{ marginRight: 5 }} name="people-outline" color="black" size={25} />
-            <Text fontSize="lg">Broj Gostiju: 3</Text>
+            <Text fontSize="lg">{`Broj gostiju: ${item.places}`}</Text>
           </HStack>
         </VStack>
       </VStack>
@@ -92,5 +144,11 @@ function LongCardReservation() {
     </HStack>
   );
 }
+
+LongCardReservation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  item: PropTypes.object.isRequired,
+  handleApiCall: PropTypes.func.isRequired,
+};
 
 export default LongCardReservation;

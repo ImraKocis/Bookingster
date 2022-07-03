@@ -1,6 +1,7 @@
-import { View, Text, TouchableWithoutFeedback, Keyboard, ScrollView, FlatList } from 'react-native';
+/* eslint-disable no-nested-ternary */
+import { View, TouchableWithoutFeedback, Keyboard, ScrollView, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Heading, HStack, Spinner } from 'native-base';
+import { Button, Heading, HStack, Spinner, Text } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +12,7 @@ import ProfilePicture from './components/ProfilePicture';
 import LongCard from './components/LongCard';
 import apiInstance from '../../../axios/apiInstance';
 import { selectUser } from '../../../redux/features/userSlice';
-import { secondary } from '../../../assets/getColors';
+import { primary, secondary } from '../../../assets/getColors';
 import KeyBoardAvoidingViewWrapper from '../../keyboardAvoidingViewWrapper/KeyboardAvoidingViewWrapper';
 
 const styles = userHomeStyles;
@@ -21,6 +22,7 @@ function UserHomeScreen({ navigation }) {
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
   const [apiData, setApiData] = useState();
+  const [error, setError] = useState(false);
 
   const dismissKeyboard = () => {
     console.log('dismiss');
@@ -39,8 +41,9 @@ function UserHomeScreen({ navigation }) {
         }
       );
       return response;
-    } catch (error) {
-      console.log(error.response);
+    } catch (err) {
+      console.log(err.response.data.errorMessage);
+      setError(true);
     }
   };
 
@@ -199,6 +202,21 @@ function UserHomeScreen({ navigation }) {
             /> */}
           </View>
         </>
+      ) : error ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text fontSize="lg" my={5}>
+            Došlo je do greške
+          </Text>
+          <Button onPress={loadData} backgroundColor={primary} borderRadius={10}>
+            Pokušaj ponovno
+          </Button>
+        </View>
       ) : (
         <View
           style={{

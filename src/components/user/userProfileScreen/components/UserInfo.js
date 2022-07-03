@@ -19,6 +19,7 @@ function UserInfo() {
         borderRadius: 20,
         marginHorizontal: 20,
         marginBottom: '5%',
+        marginTop: '5%',
       }}
     >
       <View style={styles.userInfo__photoView}>

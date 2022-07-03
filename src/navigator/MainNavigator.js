@@ -9,6 +9,7 @@ import WelcomeScreenNavigator from './WelcomeScreenNavigator';
 import AppContext from './AppContext';
 import userGet from '../api/userGet';
 import EstablishmentRegistrationForm from '../components/ugostiteljForm/EstablishmentRegistrationForm';
+// import axios from 'axios';
 // import { Text } from 'native-base';
 
 function MainNavigator() {

@@ -72,7 +72,9 @@ function EstablishmentDetailsScreen({ route, navigation }) {
               <Heading size="md">Slobodni stolovi</Heading>
             </VStack>
             <VStack alignItems="center" mx={10} flex={0.5}>
-              <Text fontSize="md">{`Broj dostupnih stolova: ${route.params.tables.length} od ${route.params.tables.length}`}</Text>
+              <Text fontSize="md">{`Broj dostupnih stolova: ${
+                route.params.tables.filter((t) => t.reserved === false).length
+              } od ${route.params.tables.length}`}</Text>
             </VStack>
           </VStack>
         </VStack>
