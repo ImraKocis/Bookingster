@@ -5,6 +5,7 @@ import UserHomeScreen from '../components/user/userHomeScreen/UserHomeScreen';
 import { primary } from '../assets/getColors';
 import UserBookingHistoryScreen from '../components/user/userBookingHistoryScreen/UserBookingHistoryScreen';
 import UserProfileScreen from '../components/user/userProfileScreen/UserProfileScreen';
+import UserHomeStackScreenNavigator from './UserHomeStackScreenNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,7 +33,7 @@ function UserTabNavigator() {
         tabBarInactiveTintColor: 'black',
       })}
     >
-      <Tab.Screen name="Početna" component={UserHomeScreen} />
+      <Tab.Screen name="Početna" component={UserHomeStackScreenNavigator} />
       <Tab.Screen name="Rezervacije" component={UserBookingHistoryScreen} />
       <Tab.Screen name="Račun" component={UserProfileScreen} />
     </Tab.Navigator>

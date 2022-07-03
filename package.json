@@ -31,6 +31,7 @@
     "react-native-dotenv": "^3.3.1",
     "react-native-gesture-handler": "^2.4.2",
     "react-native-image-crop-picker": "^0.37.3",
+    "react-native-image-fallback": "^1.0.1",
     "react-native-pager-view": "^5.4.24",
     "react-native-paper": "^4.12.1",
     "react-native-reanimated": "^2.8.0",

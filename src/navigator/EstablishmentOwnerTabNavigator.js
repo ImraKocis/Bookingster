@@ -4,6 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import loginStyle from '../components/login/loginStyle';
 import { primary } from '../assets/getColors';
 import EstablishmentOwnerHomeScreen from '../components/establishmentOwner/EstablishmentOwnerHomeScreen';
+import RezervacijeScreen from '../components/establishmentOwner/rezervacijeScreen/RezervacijeScreen';
+import ObjektiScreen from '../components/establishmentOwner/objekti/ObjektiScreen';
+import UserProfileScreen from '../components/user/userProfileScreen/UserProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,15 +32,19 @@ function EstablishmentOwnerTabNavigator() {
         headerShown: false,
         tabBarStyle: { elevation: 6, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
         tabBarHideOnKeyboard: true,
-        tabBarIcon: ({ focused, color, size }) => renderIcon(focused, color, route, size),
+        tabBarIcon: ({ focused, color, size, number }) => renderIcon(focused, color, route, size),
         tabBarActiveTintColor: primary,
         tabBarInactiveTintColor: 'black',
       })}
     >
       <Tab.Screen name="Početna" component={EstablishmentOwnerHomeScreen} />
-      <Tab.Screen name="Rezervacije" component={EstablishmentOwnerHomeScreen} />
-      <Tab.Screen name="Objekti" component={EstablishmentOwnerHomeScreen} />
-      <Tab.Screen name="Račun" component={EstablishmentOwnerHomeScreen} />
+      <Tab.Screen
+        // options={{ tabBarBadge: null }}
+        name="Rezervacije"
+        component={RezervacijeScreen}
+      />
+      <Tab.Screen name="Objekti" component={ObjektiScreen} />
+      <Tab.Screen name="Račun" component={UserProfileScreen} />
     </Tab.Navigator>
   );
 }

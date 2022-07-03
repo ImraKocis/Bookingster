@@ -16,7 +16,7 @@ import KeyBoardAvoidingViewWrapper from '../../keyboardAvoidingViewWrapper/Keybo
 
 const styles = userHomeStyles;
 
-function UserHomeScreen() {
+function UserHomeScreen({ navigation }) {
   const user = useSelector(selectUser);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
@@ -40,7 +40,7 @@ function UserHomeScreen() {
       );
       return response;
     } catch (error) {
-      console.log(error.errorMessage);
+      console.log(error.response);
     }
   };
 
@@ -92,7 +92,7 @@ function UserHomeScreen() {
               />
             </View>
           </TouchableWithoutFeedback>
-          <View style={{ flex: 0.8 }}>
+          <View style={{ marginTop: 10, flex: 0.8 }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{ display: clicked ? 'none' : 'flex' }}
@@ -113,7 +113,7 @@ function UserHomeScreen() {
                       horizontal
                       showsHorizontalScrollIndicator={false}
                       data={apiData}
-                      renderItem={({ item }) => <CubeCard item={item} />}
+                      renderItem={({ item }) => <CubeCard navigation={navigation} item={item} />}
                       keyExtractor={(item) => item.oib}
                     />
                   </View>

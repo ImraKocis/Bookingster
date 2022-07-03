@@ -1,6 +1,17 @@
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Box, HStack, VStack, Text, Input, Divider, Select } from 'native-base';
+import {
+  Box,
+  HStack,
+  VStack,
+  Text,
+  Input,
+  Divider,
+  Select,
+  IconButton,
+  CloseIcon,
+  Collapse,
+} from 'native-base';
 import VectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -22,9 +33,9 @@ const validationSchema = yup.object().shape({
     .required('Obvezan unos broja stolica'),
 });
 
-function Stolovi({ handleLeftArrowPress, setFormState, setScreenFive, screenFive }) {
+function Stolovi({ handleLeftArrowPress, setFormState, setScreenFive, screenFive, error }) {
   const [selectedArr, setSelectedArr] = useState([]);
-
+  const [show, setShow] = useState(true);
   const handleStringFormat = (c, t) => {
     let str = t.toString();
 
@@ -182,6 +193,7 @@ function Stolovi({ handleLeftArrowPress, setFormState, setScreenFive, screenFive
           <VStack flex={0.6} alignItems="center">
             {screenFive.map((item, index) => renderRow(item.nChairs, item.nTables, index))}
           </VStack>
+
           <HStack
             width="100%"
             position="absolute"
@@ -204,7 +216,7 @@ function Stolovi({ handleLeftArrowPress, setFormState, setScreenFive, screenFive
             <TouchableOpacity
               // disabled={!isValid}
 
-              onPress={setFormState}
+              onPress={() => setFormState()}
               style={{
                 flex: 1,
                 maxWidth: '30%',
@@ -237,6 +249,7 @@ Stolovi.propTypes = {
   setScreenFive: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   screenFive: PropTypes.array.isRequired,
+  error: PropTypes.string.isRequired,
 };
 
 export default Stolovi;

@@ -7,7 +7,7 @@ import { LoadTestImage } from '../../../../assets/getImages';
 import userHomeStyles from '../styles/userHomeStyles';
 
 const styles = userHomeStyles;
-function CubeCard({ item }) {
+function CubeCard({ navigation, item }) {
   const [choiceImg, setChoiceImg] = useState('');
 
   const fetchImg = async () => {
@@ -18,17 +18,21 @@ function CubeCard({ item }) {
     fetchImg();
   }, []);
 
+  // navigirat s item obj na Stack.DetaljiObjekta
+
   return (
-    <TouchableWithoutFeedback onPress={() => console.log('Card pressed')}>
-      <VStack style={styles.CardView} flex={1} borderTopRadius={20}>
-        <Center marginTop={2} alignSelf="center" justifyContent="center" flex={0.6}>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate('EstablishmentDetailsScreen', item)}
+    >
+      <VStack padding={1} style={styles.CardView} flex={1}>
+        <Center justifyContent="flex-start" flex={0.5}>
           <Image
             alt="Naziv objekta"
             style={styles.image}
             source={{ uri: item.images[0].imageUrl }}
           />
         </Center>
-        <Box marginLeft={3} marginTop={1} flex={0.1}>
+        <Box marginLeft={3} marginTop={1} flex={0.2}>
           <Text flex={1} mx={2} flexWrap="wrap" fontWeight="bold" fontSize={14}>
             {item.name}
           </Text>

@@ -25,7 +25,7 @@ import { selectUser } from '../../redux/features/userSlice';
 function EstablishmentRegistrationForm() {
   // const formState = useSelector(selectForm);
   const user = useSelector(selectUser);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const ref = useRef(PagerView);
 
   const [currentPosition, setCurrentPosition] = useState(0);
@@ -52,6 +52,9 @@ function EstablishmentRegistrationForm() {
       .then((response) => response.data.establishment)
       .catch((err) => {
         setError(err.response.data.errorMessage);
+        Alert.alert('Upozorenje', err.response.data.errorMessage, [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
       });
     // return res.data.establishment;
 
@@ -66,6 +69,7 @@ function EstablishmentRegistrationForm() {
 
   const setFormState = async () => {
     const apiObject = {
+      owner: user.UID,
       ...screenTwo,
       workingHours: screenThree,
       images: screenFour,
@@ -74,10 +78,11 @@ function EstablishmentRegistrationForm() {
 
     console.log('Api Post Response==>', await postEstablishment(apiObject));
 
-    // console.log(apiObject);
+    console.log(apiObject);
   };
 
-  // alert func
+  // const renderAlert = () =>
+  //   Alert.alert('Upozorenje', error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -146,6 +151,7 @@ function EstablishmentRegistrationForm() {
               setScreenFive={setScreenFive}
               screenFive={screenFive}
               setFormState={setFormState}
+              error={error}
             />
           </View>
         </PagerView>

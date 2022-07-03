@@ -3,6 +3,7 @@ import { Text, HStack, VStack, Center, Heading } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { LoadWelcomeImg } from '../../assets/getImages';
 import welcomeStyle from './welcomeStyle';
+import ImageWrapper from '../../assets/ImageWrapper';
 
 const styles = welcomeStyle;
 
@@ -22,6 +23,7 @@ function Welcome({ navigation }) {
       <Center flex={0.4} marginTop={10}>
         <VStack flex={1}>
           <Image style={styles.image} source={{ uri: welcomeImg }} />
+          {/* <ImageWrapper width={310} height={250} imageSource={welcomeImg} /> */}
         </VStack>
       </Center>
       <Center marginTop={5} flex={0.1}>

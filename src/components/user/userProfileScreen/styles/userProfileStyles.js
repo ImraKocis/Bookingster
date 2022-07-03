@@ -61,7 +61,7 @@ const userProfileStyles = StyleSheet.create({
   SignOutButton: {
     flex: 1,
     minHeight: '7%',
-    marginVertical: '6%',
+    marginVertical: '5%',
     marginHorizontal: '30%',
     borderRadius: 10,
     backgroundColor: primary,

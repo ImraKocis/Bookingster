@@ -84,8 +84,9 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
         ...selectedDaysApi,
         {
           day,
-          timeFrom: tFrom.toString(),
-          timeTo: tTo.toString(),
+          index,
+          timeFrom: { hours: tFrom.getHours(), minutes: tFrom.getMinutes() },
+          timeTo: { hours: tTo.getHours(), minutes: tTo.getMinutes() },
         },
       ];
       sortedDays.sort((a, b) => (a.index > b.index ? 1 : -1));
@@ -139,6 +140,7 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
           {showFrom && (
             <DateTimePicker
               testID="dateTimePicker"
+              // timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
               value={from}
               mode="time"
               is24Hour
@@ -159,6 +161,7 @@ function RadnoVrijeme({ handleRightArrowPress, handleLeftArrowPress, setScreenTh
           {showTo && (
             <DateTimePicker
               testID="dateTimePicker"
+              // timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
               value={to}
               mode="time"
               is24Hour

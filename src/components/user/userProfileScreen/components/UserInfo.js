@@ -14,7 +14,6 @@ function UserInfo() {
     <View
       style={{
         flex: 1,
-        // maxHeight: '22%',
         backgroundColor: 'white',
         elevation: 10,
         borderRadius: 20,

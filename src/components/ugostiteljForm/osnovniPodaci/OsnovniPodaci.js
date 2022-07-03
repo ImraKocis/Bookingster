@@ -185,17 +185,32 @@ function OsnovniPodaci({ handleRightArrowPress, handleLeftArrowPress, setScreenT
               )}
             </VStack>
 
-            <HStack flex={0.2} justifyContent="space-between">
-              <TouchableOpacity onPress={handleLeftArrowPress} style={{ padding: 5 }}>
+            <HStack
+              width="100%"
+              position="absolute"
+              alignItems="center"
+              bottom={8}
+              flex={0.2}
+              justifyContent="space-between"
+            >
+              <TouchableOpacity
+                onPress={handleLeftArrowPress}
+                style={{
+                  padding: 5,
+                }}
+              >
                 <VectorIcon size={25} color="black" name="arrow-left" />
               </TouchableOpacity>
 
               <TouchableOpacity
-                disabled={!isValid}
+                // disabled={!isValid}
+
                 onPress={handleRightArrowPress}
-                style={{ padding: 5 }}
+                style={{
+                  padding: 5,
+                }}
               >
-                <VectorIcon size={25} color={isValid ? 'black' : 'gray'} name="arrow-right" />
+                <VectorIcon size={25} color="black" name="arrow-right" />
               </TouchableOpacity>
             </HStack>
             <Footer />

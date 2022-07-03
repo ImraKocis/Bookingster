@@ -38,13 +38,25 @@ function Hint({ handleRightArrowPress }) {
             Služite se strelicama za navođenje. Na kraju kliknite Potvrdi
           </Text>
         </Box>
-        <Box flex={0.2}>
-          <HStack marginX="5%" justifyContent="flex-end">
-            <TouchableOpacity onPress={handleRightArrowPress} style={{ padding: 5 }}>
-              <VectorIcon size={25} color="black" name="arrow-right" />
-            </TouchableOpacity>
-          </HStack>
-        </Box>
+        <HStack
+          width="100%"
+          position="absolute"
+          alignItems="center"
+          bottom={8}
+          flex={0.2}
+          justifyContent="flex-end"
+        >
+          <TouchableOpacity
+            // disabled={!isValid}
+
+            onPress={handleRightArrowPress}
+            style={{
+              padding: 5,
+            }}
+          >
+            <VectorIcon size={25} color="black" name="arrow-right" />
+          </TouchableOpacity>
+        </HStack>
         <Footer />
       </VStack>
     </Box>

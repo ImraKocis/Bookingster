@@ -47,6 +47,7 @@ function LongCard({ buttonText, item }) {
                 flexWrap="wrap"
                 fontSize="xs"
               >
+                {/* {console.log(item)} */}
                 {item.location.address}
                 {', '}
                 {item.location.city}
