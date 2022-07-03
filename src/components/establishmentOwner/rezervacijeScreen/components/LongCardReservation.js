@@ -2,6 +2,8 @@ import axios from 'axios';
 import { View, Text, HStack, VStack, Heading } from 'native-base';
 import React from 'react';
 import VectorIcon from 'react-native-vector-icons/Ionicons';
+import IconVector from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { primary, secondary } from '../../../../assets/getColors';
@@ -85,12 +87,13 @@ function LongCardReservation({ item, handleApiCall }) {
             {item.nameOnReservation}
           </Heading>
         </HStack>
-        {/* <HStack>
-          <Text>{item.}</Text>
-        </HStack> */}
 
         <VStack mt={2} ml={3} flex={1}>
-          <HStack flex={0.5}>
+          <HStack flex={1}>
+            <IconVector size={25} name="map-marker-radius-outline" />
+            <Text fontSize="md">{item.establishment.name}</Text>
+          </HStack>
+          <HStack flex={1}>
             <VectorIcon
               style={{ marginRight: 5 }}
               name="calendar-outline"
@@ -101,7 +104,7 @@ function LongCardReservation({ item, handleApiCall }) {
               new Date(item.reservedFrom)
             )}`}</Text>
           </HStack>
-          <HStack flex={0.5}>
+          <HStack flex={1}>
             <VectorIcon style={{ marginRight: 5 }} name="people-outline" color="black" size={25} />
             <Text fontSize="lg">{`Broj gostiju: ${item.places}`}</Text>
           </HStack>

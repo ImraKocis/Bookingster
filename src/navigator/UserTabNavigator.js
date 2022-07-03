@@ -43,7 +43,7 @@ function UserTabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { elevation: 6, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+        tabBarStyle: { elevation: 6 },
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused, color, size }) => renderIcon(focused, color, route, size),
         tabBarActiveTintColor: primary,

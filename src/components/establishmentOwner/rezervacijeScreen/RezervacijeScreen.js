@@ -37,6 +37,7 @@ function RezervacijeScreen() {
     // console.log('API RESPONSE==>', await apiCall());
     const res = await apiCall();
     setData(res);
+    console.log(res);
     setRefreshing(false);
   };
 

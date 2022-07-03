@@ -93,7 +93,7 @@ function ReservationScreenNew({ navigation, route }) {
       >
         <TopHeader headerText="Rezervacija" />
         {/* <Text>{route.params.images[0].imageUrl}</Text> */}
-        <VStack flex={1} elevation={10}>
+        <VStack marginTop={5} flex={1} elevation={10}>
           <Image
             alt="CoverImage"
             borderRadius={20}

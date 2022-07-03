@@ -2,6 +2,7 @@ import { View, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { Text, VStack } from 'native-base';
 import userBookingHistoryStyles from './Styles/userBookingHistoryStyles';
 import TopHeader from './components/TopHeader';
 import LongCard from '../userHomeScreen/components/LongCard';
@@ -56,6 +57,14 @@ function UserBookingPendingScreen() {
         data={data}
         renderItem={({ item }) => <ReservationLongCard item={item} />}
         keyExtractor={(item) => item.id}
+        // eslint-disable-next-line react/no-unstable-nested-components
+        ListEmptyComponent={() => (
+          <VStack padding={10} flex={1} justifyContent="center" alignItems="center">
+            <Text textAlign="center" fontSize="lg">
+              Trenutno nemate niti jednu potvrđenu rezervaciju
+            </Text>
+          </VStack>
+        )}
       />
       {/* <LongCard buttonText="Provjeri" />
       <LongCard buttonText="Provjeri" /> */}

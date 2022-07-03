@@ -14,9 +14,9 @@ export const userSlice = createSlice({
       state.signUpData = { ...state.signUpData, ...action.payload };
     },
     login: (state, action) => {
-      console.log('ACTION', action.payload);
+      // console.log('ACTION', action.payload);
       state.user = { ...state.user, ...action.payload };
-      console.log('USER STATE', state.user);
+      // console.log('USER STATE', state.user);
     },
     logout: (state) => {
       state.user = null;

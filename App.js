@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { LogBox } from 'react-native';
 import { NativeBaseProvider, StatusBar } from 'native-base';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,6 +11,7 @@ import EstablishmentOwnerTabNavigator from './src/navigator/EstablishmentOwnerTa
 import { primary } from './src/assets/getColors';
 
 function App() {
+  LogBox.ignoreAllLogs();
   return (
     <Provider store={store}>
       <NavigationContainer>

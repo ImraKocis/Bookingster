@@ -141,7 +141,7 @@ function UserHomeScreen({ navigation }) {
                       horizontal
                       showsVerticalScrollIndicator={false}
                       data={apiData}
-                      renderItem={({ item }) => <CubeCard item={item} />}
+                      renderItem={({ item }) => <CubeCard navigation={navigation} item={item} />}
                       keyExtractor={(item) => item.oib}
                     />
                     {/* <LongCard buttonText="Rezerviraj" /> */}

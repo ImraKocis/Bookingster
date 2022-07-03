@@ -30,9 +30,9 @@ function UserDetails() {
         marginHorizontal: 20,
       }}
     >
-      <Heading marginLeft="2%" marginTop="2%" size="md" fontWeight={400}>
+      {/* <Heading marginLeft="2%" marginTop="2%" size="md" fontWeight={400}>
         Osobni Podaci
-      </Heading>
+      </Heading> */}
       <View style={styles.userDetails__photoView}>
         <Image
           alt="userPhoto"

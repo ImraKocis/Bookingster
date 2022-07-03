@@ -47,7 +47,7 @@ function EstablishmentRegistrationForm() {
   const postEstablishment = async (apiObj) => {
     const res = await axios
       .post('https://bookingsterapi.oa.r.appspot.com/bookingster/api/establishment', apiObj, {
-        headers: { authorization: `Bearer ${ADMIN_TOKEN}` },
+        headers: { authorization: `Bearer ${user.jwt}` },
       })
       .then((response) => response.data.establishment)
       .catch((err) => {
@@ -106,17 +106,18 @@ function EstablishmentRegistrationForm() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         enabled={Platform.OS === 'ios'}
-        flexGrow={1}
+        flex={0.8}
       >
         <PagerView
+          style={{
+            flexGrow: 1,
+            // backgroundColor: 'red',
+          }}
           ref={ref}
           onPageSelected={(e) => {
             setCurrentPosition(e.nativeEvent.position);
             // console.log(e.nativeEvent);
             // setFormState(e.nativeEvent.position - 1);
-          }}
-          style={{
-            flexGrow: 1,
           }}
           initialPage={0}
         >

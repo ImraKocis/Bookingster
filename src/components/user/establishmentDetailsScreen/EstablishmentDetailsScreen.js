@@ -10,7 +10,7 @@ function EstablishmentDetailsScreen({ route, navigation }) {
   return (
     <View flex={1}>
       <TopHeader headerText={route.params.name} />
-      <View marginBottom={4} flex={0.35} alignItems="center">
+      <View marginTop={5} marginBottom={4} flex={0.35} alignItems="center">
         <View
           borderRadius={19}
           style={{ shadowColor: 'black' }}

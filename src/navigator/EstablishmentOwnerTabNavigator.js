@@ -10,6 +10,7 @@ import RezervacijeScreen from '../components/establishmentOwner/rezervacijeScree
 import ObjektiScreen from '../components/establishmentOwner/objekti/ObjektiScreen';
 import UserProfileScreen from '../components/user/userProfileScreen/UserProfileScreen';
 import { selectUser } from '../redux/features/userSlice';
+import EstablishmentHomeScreenStack from './EstablishmentHomeScreenStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +47,7 @@ function EstablishmentOwnerTabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { elevation: 6, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+        tabBarStyle: { elevation: 6 },
         tabBarLabelStyle: { fontSize: 12 },
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused, color, size, number }) => renderIcon(focused, color, route, size),
@@ -54,7 +55,7 @@ function EstablishmentOwnerTabNavigator() {
         tabBarInactiveTintColor: 'black',
       })}
     >
-      <Tab.Screen name="Početna" component={EstablishmentOwnerHomeScreen} />
+      <Tab.Screen name="Početna" component={EstablishmentHomeScreenStack} />
       <Tab.Screen
         // options={{ tabBarBadge: null }}
         name="Rezervacije"
