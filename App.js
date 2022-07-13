@@ -12,6 +12,7 @@ import { primary } from './src/assets/getColors';
 
 function App() {
   LogBox.ignoreAllLogs();
+  console.log('test');
   return (
     <Provider store={store}>
       <NavigationContainer>
