@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1077636110112",
+    "project_id": "bookingster-169ab",
+    "storage_bucket": "bookingster-169ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077636110112:android:24e6ba276e8cc9ec65a945",
+        "android_client_info": {
+          "package_name": "com.im.bookingster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077636110112-k8erd84dlmhqurop3p8f0o1ncf2e2bu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.im.bookingster",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1077636110112-0rvkfkpuqtsc5r38kla5vma11ioppkeq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANRue_KvTDKN9IQ4OfEFlVFIM3NA770oY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077636110112-0rvkfkpuqtsc5r38kla5vma11ioppkeq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
